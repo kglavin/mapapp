@@ -9,7 +9,7 @@ import pandas as pd
 import scm as scm
 import gpslocation as gps
 from geojson import MultiLineString
-
+import netrc
 
 
 def generate_table(dataframe, max_rows=10):
@@ -28,8 +28,9 @@ def generate_table(dataframe, max_rows=10):
 
 mapbox_access_token = "pk.eyJ1Ijoia2dsYXZpbiIsImEiOiJjamd6ZjgzZDkwZWJlMnFyNG1wN3ZlMXVwIn0.qygVV7-zi8IMX8wyxawEpA"
 realm = 'https://catfish3.riverbed.cc'
-users = ['kglavin-us-bot', 'kglavin-eur-bot', 'kglavin-asia-bot' ]
-pw='b0ts-forever'
+hosts = ['kglavin-us', 'kglavin-eur', 'kglavin-asia' ]
+users = []
+pw=[]
 
 colors = {
     'background': '#111111',
@@ -47,10 +48,13 @@ if __name__ == '__main__':
     eventdf = pd.DataFrame([],  columns =  ['Time','utc', 'Message', 'Severity'])
 
     gpsdict = gps.gendict()
-    userlist = ""
-    
-    for user in users:
-        userlist = userlist + user + ','
+    netrc = netrc.netrc()
+
+    for host in hosts:
+        authTokens = netrc.authenticators(host)
+        user = authTokens[0]
+        users.append(user)
+        pw = authTokens[2]
         r = scm.get('sites', realm, user,pw)
         if r.status_code == 200:
             f = r.json()
@@ -81,7 +85,7 @@ if __name__ == '__main__':
                                         a['utc'],
                                         a['msg'],
                                         a['severity']]
-                                        
+
 
     app.layout = html.Div(
         
@@ -117,7 +121,7 @@ if __name__ == '__main__':
                    className='two columns'
                ),
                html.H5(
-                   userlist,
+                   [str(n)+' ' for n in users],
                    id='admins',
                    className='eight columns',
                    style={'text-align': 'center'}
