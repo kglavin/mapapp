@@ -27,19 +27,20 @@ def get(item, realm, user,pw):
 
 def get_by_id(item, id, realm, user, pw):
     choices = {
-        'org':'/api/scm.config/1.0/org/',
-        'node':'/api/scm.config/1.0/node/',
-        'site':'/api/scm.config/1.0/site/',
-        'wan':'/api/scm.config/1.0/wan/',
-        'port':'/api/scm.config/1.0/port/',
-        'uplink':'/api/scm.config/1.0/uplink/',
-        'user':'/api/scm.config/1.0/user',
-        'zone':'/api/scm.config/1.0/zone',
-        'device':'/api/scm.config/1.0/device',
-        'path_rule':'/api/scm.config/1.0/path_rule',
-        'status':'/api/scm.config/1.0.status'
+        'org':'/api/scm.config/1.0/org/{id}',
+        'node':'/api/scm.config/1.0/node/{id}',
+        'site':'/api/scm.config/1.0/site/{id}',
+        'wan':'/api/scm.config/1.0/wan/{id}',
+        'port':'/api/scm.config/1.0/port/{id}',
+        'uplink':'/api/scm.config/1.0/uplink/{id}',
+        'user':'/api/scm.config/1.0/user/{id}',
+        'zone':'/api/scm.config/1.0/zone/{id}',
+        'device':'/api/scm.config/1.0/device/{id}',
+        'path_rule':'/api/scm.config/1.0/path_rule/{id}',
+        'status':'/api/scm.config/1.0.status',
+        'sitelink':'api/scm.reporting/1.0/site/{id}'
     }
 
     which_item = choices.get(item, 'status')
-    r = rq.get(realm + which_item + id, auth=(user,pw))    
+    r = rq.get(realm + which_item.format(id=id), auth=(user,pw))    
     return r    

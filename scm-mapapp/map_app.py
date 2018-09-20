@@ -8,7 +8,7 @@ import json
 import pandas as pd
 import scm as scm
 import gpslocation as gps
-
+from geojson import MultiLineString
 
 
 
@@ -29,7 +29,7 @@ def generate_table(dataframe, max_rows=10):
 mapbox_access_token = "pk.eyJ1Ijoia2dsYXZpbiIsImEiOiJjamd6ZjgzZDkwZWJlMnFyNG1wN3ZlMXVwIn0.qygVV7-zi8IMX8wyxawEpA"
 realm = 'https://catfish3.riverbed.cc'
 users = ['kglavin-us-bot', 'kglavin-eur-bot', 'kglavin-asia-bot' ]
-pw='b0ts'
+pw='b0ts-forever'
 
 colors = {
     'background': '#111111',
@@ -55,6 +55,7 @@ if __name__ == '__main__':
         if r.status_code == 200:
             f = r.json()
             for a in f['items']:
+                #print("############  SITES")
                 #print(a)
                 p = gpsdict[a['city']]
                 lat = p['lat']
@@ -65,49 +66,23 @@ if __name__ == '__main__':
         if r.status_code == 200:
             f = r.json()
             for a in f['items']:
+                #print("############  NODES")
+                #print(a)
                 city = sitedf.loc[a['site']]['site']
-                nodedf.loc[a['id']] = [ city, a['serial'], a['router_id']]         
+                nodedf.loc[a['id']] = [city, a['serial'], a['router_id']]         
         
         r = scm.get('eventlogs', realm, user,pw)
         if r.status_code == 200:
             f = r.json()
+            #print("############  Events")
             for a in f['items']:
+                #print(a)
                 eventdf.loc[a['id']] = [datetime.datetime.fromtimestamp(a['utc']).strftime('%c'),
                                         a['utc'],
                                         a['msg'],
                                         a['severity']]
+                                        
 
-
-#    geojson_type_dict=dict(
-#            type = 'scattergeo',
-#            lat = [ 40.7127, 51.5072 ],
-#            lon = [ -74.0059, 0.1275 ],
-#            mode = 'lines',
-#            line = dict(
-#                        width = 2,
-#                        color = 'blue',
-#                    ),
-#        )
-    
-
-    geo_type_dict = {
-        "type": "geojson",
-        "data": {
-            "type": "Feature",
-            "properties": {},
-            "geometry": {
-                "type": "LineString",
-                "coordinates": [[2, 44.4074], [-89,35 ]],
-            }}}
-
-    layers=[dict(sourcetype = 'geojson',
-                          source = geo_type_dict,
-                          color='rgb(0,0,230)',
-                          type = 'line',
-                          line=dict(width=1.5),
-                    )
-                 ]  
-                 
     app.layout = html.Div(
         
         children = [
@@ -161,7 +136,14 @@ if __name__ == '__main__':
             children=[ dcc.Graph(      
                 id='graph',          
                 figure={       
-                    'data': [{                                                     
+                    'data': [ {                                                     
+                        'lat': [52.37, 50.12 ],
+                        'lon': [4.9 , 8.68 ],
+                        'type': 'scattermapbox',
+                        'mode':'lines',
+                        'line':{ 'size':1, 'color': 'rgb(255, 0, 0)' },
+                    },
+                    {                                                     
                         'lat': sitedf['lat'],
                         'lon': sitedf['lon'],
                         'type': 'scattermapbox',
@@ -174,7 +156,7 @@ if __name__ == '__main__':
                         'showlegend': False,
                         'mapbox': { 'accesstoken': mapbox_access_token,
                                     'style': 'mapbox://styles/kglavin/cjgzfhh2900072slet6ksq66d'},
-                                    'layers': layers,
+                                    'layers': [],
                                     'center': dict(lat=0,lon=-180,),
                         'margin': {                                                                                                
                             'l': 5, 'r': 5, 'b': 5, 't': 25
