@@ -1,5 +1,10 @@
 from easysnmp import Session
+import netrc 
 import pprint
+
+
+
+netrc = netrc.netrc()
 
 sites = { 
          'Dallas':'44.1.0.12',
@@ -43,8 +48,10 @@ def get_if_group(session, group, eth, vti):
            v.append(i.value)
     return (e, v)
 
+authTokens = netrc.authenticators('scm-snmp')
+community = authTokens[2]
 for k,v in sites.items():
-       session = Session(hostname=v, community='bo', version=2)
+       session = Session(hostname=v, community=community, version=2)
        data = {'id': k}	
        site_data[k] = data
        data['location'] = session.get('sysLocation.0').value
