@@ -43,7 +43,7 @@ if __name__ == '__main__':
     app = dash.Dash(__name__)
     server = app.server
 
-    sitedf = pd.DataFrame([],  columns =  ['site', 'lat', 'lon'])
+    sitedf = pd.DataFrame([],  columns =  ['site', 'lat', 'lon','leafs'])
     nodedf = pd.DataFrame([],  columns =  ['site','serial','router_id'])
     eventdf = pd.DataFrame([],  columns =  ['Time','utc', 'Message', 'Severity'])
 
@@ -64,7 +64,7 @@ if __name__ == '__main__':
                 p = gpsdict[a['city']]
                 lat = p['lat']
                 lon = p['lon']
-                sitedf.loc[a['id']] = [a['city'], lat, lon]
+                sitedf.loc[a['id']] = [a['city'], lat, lon,a['sitelink_leafs']]
 
         r = scm.get('nodes', realm, user,pw)
         if r.status_code == 200:
@@ -97,19 +97,19 @@ if __name__ == '__main__':
                     className='eight columns',
                     style={
                         'color': colors['text'],
-                        'backgroundColor': colors['background']
+#                        'backgroundColor': colors['background']
                     },     
                 ),
-                html.Img(
-                    src="/logo_riverbed_orange.png",
-                    className='one columns',
-                    style={
-                        'height': '100',
-                        'width': '225',
-                        'float': 'right',
-                        'position': 'relative',
-                    },
-                ),
+                html.A([
+                    html.Img(
+                        src='https://www.riverbed.com/content/dam/riverbed-www/en_US/Images/fpo/logo_riverbed_orange.png?redesign=true',
+                         className='one columns',
+                         style={
+                            'width':160,
+                            'float': 'right',
+                            'position': 'relative',
+                        })
+                    ], href='https://www.riverbed.com'),
             ],
             className='row'
         ),
