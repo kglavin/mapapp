@@ -57,6 +57,9 @@ def poll_sites(sites, site_data, community):
 if __name__ == "__main__":
     import netrc 
     import time
+    from time import gmtime, strftime
+    from influxdb import InfluxDBClient
+    import json
 
     import pprint
     netrc = netrc.netrc()
@@ -80,13 +83,41 @@ if __name__ == "__main__":
 
             }
 
-    site_data = { }
-
     authTokens = netrc.authenticators('scm-snmp')
     community = authTokens[2]
-    for t in range(10):
+    client = InfluxDBClient(host='influxdb', port=8086)
+    client.switch_database('scmdata')
+
+    for t in range(30000000):
+        site_data = { }
+        json_body = [ ]
+        now_time = time.strftime('%Y-%m-%dT%H:%M:%S', gmtime())
+        #now_time = str(time.clock())
         poll_sites(sites,site_data,community)
-        pprint.pprint(site_data)
-        print("--",t,"--")
+        #pprint.pprint(site_data)
+        for k,v in site_data.items():
+           sd = v
+           eths = sd['eth_name'] 
+           ind=0
+           for eth in eths:
+               d = dict()
+               d['measurement'] = 'ifstats'
+               d['tags'] = { 'site': sd['location'],
+                             'id': sd['id'], 
+                             'if_name': eth  } 
+               d['time'] =  now_time
+
+               sample =  { 
+                             'in_octets': sd['eth_ioctet'][ind],
+                             'out_octets': sd['eth_ooctet'][ind],
+                             'in_unicast':sd['eth_iunicast'][ind],
+                             'out_unicast':sd['eth_ounicast'][ind],
+                             'status':sd['eth_status'][ind],
+                         } 
+               d['fields'] = sample
+               json_body.append(d)
+               ind += 1
+        #print(json_body)
+        client.write_points(json_body,time_precision='ms')
         time.sleep(30)
 
