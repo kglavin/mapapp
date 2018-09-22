@@ -11,16 +11,19 @@ def get_if_ids(session):
         eths_name = []
         vtis = []
         vtis_name = []
-        if_descs = session.bulkwalk('IF-MIB::ifDescr')
-        for item in if_descs:
-             if 'eth' in item.value:
-                 eths.append(item.oid_index)
-                 eths_name.append(item.value)
-             if 'vti' in item.value:
-                 if 'ip_vti0' not in item.value:
-                     if 'ip6_vti0' not in item.value:
-                        vtis.append(item.oid_index)
-                        vtis_name.append(item.value)
+        try:
+          if_descs = session.bulkwalk('IF-MIB::ifDescr')
+          for item in if_descs:
+               if 'eth' in item.value:
+                  eths.append(item.oid_index)
+                   eths_name.append(item.value)
+              if 'vti' in item.value:
+                   if 'ip_vti0' not in item.value:
+                       if 'ip6_vti0' not in item.value:
+                          vtis.append(item.oid_index)
+                          vtis_name.append(item.value)
+        except:
+          pass
         return (eths,eths_name,vtis, vtis_name)
 
 def get_if_group(session, group, eth, vti):
@@ -37,20 +40,38 @@ def get_if_group(session, group, eth, vti):
 
 def poll_sites(sites, site_data, community):
     for k,v in sites.items():
-           session = Session(hostname=v, community=community, version=2)
-           data = {'id': k}	
-           site_data[k] = data
-           data['time'] = time.strftime('%Y-%m-%dT%H:%M:%S', gmtime())
-           data['location'] = session.get('sysLocation.0').value
-           data['numinterfaces'] = get_num_interfaces(session)
-           data['eth_index'], data['eth_name'], data['vti_index'], data['vti_name'] =  get_if_ids(session)
-           ethi = [int(n) for n in data['eth_index']]
-           vtii = [int(n) for n in data['vti_index']]
-           data['eth_status'],data['vti_status'] = get_if_group(session, 'IF-MIB::ifOperStatus', ethi, vtii)
+        try :
+          session = Session(hostname=v, community=community, version=2)
+          data = {'id': k}	
+          site_data[k] = data
+          data['time'] = time.strftime('%Y-%m-%dT%H:%M:%S', gmtime())
+          data['location'] = session.get('sysLocation.0').value
+          data['numinterfaces'] = get_num_interfaces(session)
+          data['eth_index'], data['eth_name'], data['vti_index'], data['vti_name'] =  get_if_ids(session)
+          ethi = [int(n) for n in data['eth_index']]
+          vtii = [int(n) for n in data['vti_index']]
+          try:
+            data['eth_status'],data['vti_status'] = get_if_group(session, 'IF-MIB::ifOperStatus', ethi, vtii)
+          except:
+            data['eth_status'],data['vti_status'] = [],[]
+          try:
            data['eth_ioctet'],data['vti_ioctet'] = get_if_group(session, 'IF-MIB::ifHCInOctets', ethi, vtii)
+          except:
+            data['eth_ioctet'],data['vti_ioctet'] = [],[]
+          try:
            data['eth_ooctet'],data['vti_ooctet'] = get_if_group(session, 'IF-MIB::ifHCOutOctets', ethi, vtii)
+          except:
+            data['eth_ooctet'],data['vti_ooctet'] = []. []
+          try:
            data['eth_iunicast'],data['vti_iunicast'] = get_if_group(session, 'IF-MIB::ifHCInUcastPkts', ethi, vtii)
+          except:
+            data['eth_iunicast'],data['vti_iunicast'] = [], []
+          try:
            data['eth_ounicast'],data['vti_ounicast'] = get_if_group(session, 'IF-MIB::ifHCOutUcastPkts', ethi, vtii)
+          except:
+            data['eth_ounicast'],data['vti_ounicast'] = [],[]
+        except:
+          pass
     return
 
 
@@ -90,10 +111,10 @@ if __name__ == "__main__":
     client = InfluxDBClient(host='influxdb', port=8086)
     client.switch_database('scmdata')
 
-    for t in range(30000000):
+    while True:
         site_data = { }
         json_body = [ ]
-
+        start_poll_time = time.time()
         poll_sites(sites,site_data,community)
         for k,v in site_data.items():
           sd = v
@@ -130,5 +151,14 @@ if __name__ == "__main__":
                              'status':sd['vti_status'][ind]} 
             json_body.append(d)
             ind += 1
-        time.sleep(30)
+        try:
+          client.write_points(json_body,time_precision='ms')
+        except:
+            pass
+        now_time = time.time()
+        poll_time = now_time-start_poll_time
+        if int(poll_time) < 30:
+          time.sleep(30-int(poll_time)
+        else:
+          time.sleep(20)
 
