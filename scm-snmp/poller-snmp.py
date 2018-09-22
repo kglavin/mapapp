@@ -1,6 +1,7 @@
 from easysnmp import Session
 import netrc 
 import pprint
+from time import gmtime, strftime
 
 def get_num_interfaces(session):
 	return session.get('IF-MIB::ifNumber.0').value
@@ -39,6 +40,7 @@ def poll_sites(sites, site_data, community):
            session = Session(hostname=v, community=community, version=2)
            data = {'id': k}	
            site_data[k] = data
+           data['time'] = time.strftime('%Y-%m-%dT%H:%M:%S', gmtime())
            data['location'] = session.get('sysLocation.0').value
            data['numinterfaces'] = get_num_interfaces(session)
            data['eth_index'], data['eth_name'], data['vti_index'], data['vti_name'] =  get_if_ids(session)
@@ -91,33 +93,42 @@ if __name__ == "__main__":
     for t in range(30000000):
         site_data = { }
         json_body = [ ]
-        now_time = time.strftime('%Y-%m-%dT%H:%M:%S', gmtime())
-        #now_time = str(time.clock())
-        poll_sites(sites,site_data,community)
-        #pprint.pprint(site_data)
-        for k,v in site_data.items():
-           sd = v
-           eths = sd['eth_name'] 
-           ind=0
-           for eth in eths:
-               d = dict()
-               d['measurement'] = 'ifstats'
-               d['tags'] = { 'site': sd['location'],
-                             'id': sd['id'], 
-                             'if_name': eth  } 
-               d['time'] =  now_time
 
-               sample =  { 
-                             'in_octets': sd['eth_ioctet'][ind],
-                             'out_octets': sd['eth_ooctet'][ind],
-                             'in_unicast':sd['eth_iunicast'][ind],
-                             'out_unicast':sd['eth_ounicast'][ind],
-                             'status':sd['eth_status'][ind],
-                         } 
-               d['fields'] = sample
-               json_body.append(d)
-               ind += 1
-        #print(json_body)
-        client.write_points(json_body,time_precision='ms')
+        poll_sites(sites,site_data,community)
+        for k,v in site_data.items():
+          sd = v
+          eths = sd['eth_name'] 
+          ind=0
+          for eth in eths:
+            d = dict()
+            d['measurement'] = 'ifstats'
+            d['tags'] = { 'site': sd['location'],
+                          'id': sd['id'], 
+                          'if_name': eth  } 
+            d['time'] =  sd['time']
+            d['fields'] =  {  'in_octets': sd['eth_ioctet'][ind],
+                              'out_octets': sd['eth_ooctet'][ind],
+                              'in_unicast':sd['eth_iunicast'][ind],
+                              'out_unicast':sd['eth_ounicast'][ind],
+                              'status':sd['eth_status'][ind]} 
+            json_body.append(d)
+            ind += 1
+          vtis = sd['vti_name'] 
+          ind=0
+          for vti in vtis:
+            d = dict()
+            d['measurement'] = 'ifstats'
+            d['tags'] = { 'site': sd['location'],
+                          'id': sd['id'], 
+                          'if_name': vti  } 
+            d['time'] =  sd['time']
+
+            d['fields'] =  { 'in_octets': sd['vti_ioctet'][ind],
+                             'out_octets': sd['vti_ooctet'][ind],
+                             'in_unicast':sd['vti_iunicast'][ind],
+                             'out_unicast':sd['vti_ounicast'][ind],
+                             'status':sd['vti_status'][ind]} 
+            json_body.append(d)
+            ind += 1
         time.sleep(30)
 
