@@ -4,13 +4,13 @@ import pprint
 from time import gmtime, strftime
 
 def get_num_interfaces(session):
-  ''' get the number of interfaces on the target device, 
+    ''' get the number of interfaces on the target device, 
       can be used a quick ping to see if the device is alive
       '''
-	return session.get('IF-MIB::ifNumber.0').value
+    return session.get('IF-MIB::ifNumber.0').value
 
 def get_if_ids(session):
-  ''' parse out the interface description table and return a 
+    ''' parse out the interface description table and return a 
       valid list of ethernet and virtual tunnel names and indexs
       '''
     eths = []
@@ -56,13 +56,13 @@ def get_if_group(session, group, eth, vti):
 
 
 def poll_sites(sites, community='public'):
-''' given a dictionary of sites and the associated ip addresses, use the provided community string to 
+    ''' given a dictionary of sites and the associated ip addresses, use the provided community string to 
       collect the values for the set of ethernet and virtual tunnel interfaces that are on the target device
       '''
     site_data = {}
     for k,v in sites.items():
-        site_data[k] = data
         data = {'id': k}    
+        site_data[k] = data
         data['time'] = time.strftime('%Y-%m-%dT%H:%M:%S', gmtime())
         try :
             session = Session(hostname=v, community=community, version=2) 
@@ -82,7 +82,7 @@ def poll_sites(sites, community='public'):
             try:
               data['eth_ooctet'],data['vti_ooctet'] = get_if_group(session, 'IF-MIB::ifHCOutOctets', ethi, vtii)
             except:
-              data['eth_ooctet'],data['vti_ooctet'] = []. []
+              data['eth_ooctet'],data['vti_ooctet'] = [], []
             try:
               data['eth_iunicast'],data['vti_iunicast'] = get_if_group(session, 'IF-MIB::ifHCInUcastPkts', ethi, vtii)
             except:
@@ -91,12 +91,12 @@ def poll_sites(sites, community='public'):
               data['eth_ounicast'],data['vti_ounicast'] = get_if_group(session, 'IF-MIB::ifHCOutUcastPkts', ethi, vtii)
             except:
               data['eth_ounicast'],data['vti_ounicast'] = [],[]
-          except:
+        except:
             pass
     return site_data
 
 
-def pivot_sitedata(if_type='eth',sd):
+def pivot_sitedata(sd,if_type='eth'):
   ''' the sitedata for a specific site needs to be pivoted into a format that 
       allows the data to be inserted in the influxdb time series, 
       the input site data is structured where all measurements are bundled indexed by inteface index.
@@ -162,17 +162,31 @@ if __name__ == "__main__":
         measurements = [ ]
         start_poll_time = time.time()
         site_data = poll_sites(sites,community)
+        print("len measurements = ", len(measurements))
         for k,v in site_data.items():
-          measurements.append(pivot_sitedata('eth',v))
-          measurements.append(pivot_sitedata('vti',v))
+          print ("v = ",v)
+          kk = pivot_sitedata(v,'eth')
+          print(" k = ",k)
+          print(" measurement = ", kk)
+          for n in kk:
+             measurements.append(n)
+          print ("v = ",v)
+          kk = pivot_sitedata(v,'vti')
+          print(" k = ",k)
+          print(" measurement = ", kk)
+          for n in kk:
+             measurements.append(n)
+          #measurements.append(pivot_sitedata(v,'eth'))
+          #measurements.append(pivot_sitedata(v,'vti'))
         try:
+          #print(measurements)
           client.write_points(measurements,time_precision='ms')
         except:
             pass
         now_time = time.time()
         poll_time = now_time-start_poll_time
         if int(poll_time) < 30:
-          time.sleep(30-int(poll_time)
+          time.sleep(30-int(poll_time))
         else:
           time.sleep(20)
 
