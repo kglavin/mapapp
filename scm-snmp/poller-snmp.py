@@ -173,8 +173,8 @@ if __name__ == "__main__":
             pass
         now_time = time.time()
         poll_time = now_time-start_poll_time
-        if int(poll_time) < 30:
-          time.sleep(30-int(poll_time))
+        if int(poll_time) < 15:
+          time.sleep(15-int(poll_time))
         else:
-          time.sleep(20)
+          time.sleep(5)
 
