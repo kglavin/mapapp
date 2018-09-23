@@ -1,8 +1,7 @@
 from easysnmp import Session
 import netrc 
-import pprint
 import time
-from poller-snmp import poll_sites, pivot_sitedata
+from poller-snmp import mp_poll_sites, poll_sites, pivot_sitedata
 from influxdb import InfluxDBClient
 import pprint
 
@@ -36,18 +35,20 @@ if __name__ == "__main__":
     while True:
         measurements = [ ]
         start_poll_time = time.time()
-        site_data = poll_sites(sites,community)
+        site_data = mp_poll_sites(sites,community)
         for k,v in site_data.items():
-          measurements.append(pivot_sitedata('eth',v))
-          measurements.append(pivot_sitedata('vti',v))
+          for n in pivot_sitedata(v,'eth'):
+             measurements.append(n)
+          for n in pivot_sitedata(v,'vti'):
+             measurements.append(n)
         try:
-          client.write_points(measurements,time_precision='ms')
+          client.write_points(measurements,time_precision='s')
         except:
             pass
         now_time = time.time()
         poll_time = now_time-start_poll_time
-        if int(poll_time) < 30:
-          time.sleep(30-int(poll_time)
+        if int(poll_time) < 15:
+          time.sleep(15-int(poll_time)
         else:
-          time.sleep(20)
+          time.sleep(5)
 

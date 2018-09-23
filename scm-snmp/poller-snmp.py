@@ -2,6 +2,7 @@ from easysnmp import Session
 import netrc 
 import pprint
 from time import gmtime, strftime
+import multiprocessing as mp
 
 def get_num_interfaces(session):
     ''' get the number of interfaces on the target device, 
@@ -55,45 +56,66 @@ def get_if_group(session, group, eth, vti):
     return (e, v)
 
 
-def poll_sites(sites, community='public'):
-    ''' given a dictionary of sites and the associated ip addresses, use the provided community string to 
-      collect the values for the set of ethernet and virtual tunnel interfaces that are on the target device
-      '''
-    site_data = {}
-    for k,v in sites.items():
-        data = {'id': k}    
-        site_data[k] = data
-        data['time'] = time.strftime('%Y-%m-%dT%H:%M:%S', gmtime())
-        try :
-            session = Session(hostname=v, community=community, version=2) 
-            data['location'] = session.get('sysLocation.0').value
-            data['numinterfaces'] = get_num_interfaces(session)
-            data['eth_index'], data['eth_name'], data['vti_index'], data['vti_name'] =  get_if_ids(session)
-            ethi = [int(n) for n in data['eth_index']]
-            vtii = [int(n) for n in data['vti_index']]
-            try:
-              data['eth_status'],data['vti_status'] = get_if_group(session, 'IF-MIB::ifOperStatus', ethi, vtii)
-            except:
-              data['eth_status'],data['vti_status'] = [],[]
-            try:
-              data['eth_ioctet'],data['vti_ioctet'] = get_if_group(session, 'IF-MIB::ifHCInOctets', ethi, vtii)
-            except:
-              data['eth_ioctet'],data['vti_ioctet'] = [],[]
-            try:
-              data['eth_ooctet'],data['vti_ooctet'] = get_if_group(session, 'IF-MIB::ifHCOutOctets', ethi, vtii)
-            except:
-              data['eth_ooctet'],data['vti_ooctet'] = [], []
-            try:
-              data['eth_iunicast'],data['vti_iunicast'] = get_if_group(session, 'IF-MIB::ifHCInUcastPkts', ethi, vtii)
-            except:
-              data['eth_iunicast'],data['vti_iunicast'] = [], []
-            try:
-              data['eth_ounicast'],data['vti_ounicast'] = get_if_group(session, 'IF-MIB::ifHCOutUcastPkts', ethi, vtii)
-            except:
-              data['eth_ounicast'],data['vti_ounicast'] = [],[]
-        except:
-            pass
-    return site_data
+def poll_site(site, hostname, community='public'):
+  ''' given a site tag and ip addresses/hosts, use the provided community string to 
+  collect the values for the set of ethernet and virtual tunnel interfaces that are on the target device
+  '''
+  data = {'id': site}    
+  data['time'] = time.strftime('%Y-%m-%dT%H:%M:%S', gmtime())
+  try:
+      session = Session(hostname, community, version=2) 
+      data['location'] = session.get('sysLocation.0').value
+      data['numinterfaces'] = get_num_interfaces(session)
+      data['eth_index'], data['eth_name'], data['vti_index'], data['vti_name'] =  get_if_ids(session)
+      ethi = [int(n) for n in data['eth_index']]
+      vtii = [int(n) for n in data['vti_index']]
+      try:
+          data['eth_status'],data['vti_status'] = get_if_group(session, 'IF-MIB::ifOperStatus', ethi, vtii)
+      except:
+          data['eth_status'],data['vti_status'] = [],[]
+      try:
+          data['eth_ioctet'],data['vti_ioctet'] = get_if_group(session, 'IF-MIB::ifHCInOctets', ethi, vtii)
+      except:
+          data['eth_ioctet'],data['vti_ioctet'] = [],[]
+      try:
+          data['eth_ooctet'],data['vti_ooctet'] = get_if_group(session, 'IF-MIB::ifHCOutOctets', ethi, vtii)
+      except:
+          data['eth_ooctet'],data['vti_ooctet'] = [],[]
+      try:
+          data['eth_iunicast'],data['vti_iunicast'] = get_if_group(session, 'IF-MIB::ifHCInUcastPkts', ethi, vtii)
+      except:
+          data['eth_iunicast'],data['vti_iunicast'] = [],[]ß
+      try:
+          data['eth_ounicast'],data['vti_ounicast'] = get_if_group(session, 'IF-MIB::ifHCOutUcastPkts', ethi, vtii)
+      except:
+          data['eth_ounicast'],data['vti_ounicast'] = [],[]
+  except:
+      pass
+return data
+
+def poll_sites(sites,community='public'):
+  ''' given a dictionary of sites and the associated ip addresses, use the provided community string to 
+  collect the values for the set of ethernet and virtual tunnel interfaces that are on the target device
+  '''
+  site_data = {}
+      for k,v in sites.items():
+        d = poll_site(k,v,community)
+        site_data[k] = d
+  return site_data
+
+
+def mp_poll_sites(sites,community='public'):
+  ''' given a dictionary of sites { 'id': x, 'hostname': y} and the associated ip addresses, use the provided community string to 
+  collect the values for the set of ethernet and virtual tunnel interfaces that are on the target device
+  using the python multiprocessing subsystem to process a number of the snmp polls in parallel, this will 
+  mask some of the roundtrip latency that accumumaltes if we query each appliance serially (as well as the serial queries to 
+  multiple snmp groups being made that this implementation does not address) '''
+  pool = mp.Pool(processes=4)
+  site_data = {}
+  results = [poll.apply(poll_site, args=(k,v,community)) for k,v in sites.items()]
+  for r in results:
+    site_data[r['id']] = r
+  return site_data
 
 
 def pivot_sitedata(sd,if_type='eth'):
@@ -117,9 +139,9 @@ def pivot_sitedata(sd,if_type='eth'):
       d['time'] =  sd['time']
       d['fields'] =  {  'in_octets'  : sd[if_type+'_ioctet'][ind],
                         'out_octets' : sd[if_type+'_ooctet'][ind],
-                        'in_unicast' :sd[if_type+'_iunicast'][ind],
-                        'out_unicast':sd[if_type+'_ounicast'][ind],
-                        'status'     :sd[if_type+'_status'][ind]}
+                        'in_unicast' : sd[if_type+'_iunicast'][ind],
+                        'out_unicast': sd[if_type+'_ounicast'][ind],
+                        'status'     : sd[if_type+'_status'][ind]}
       r.append(d)
       ind += 1
   return r
@@ -129,7 +151,6 @@ if __name__ == "__main__":
     import time
     from time import gmtime, strftime
     from influxdb import InfluxDBClient
-    import json
 
     import pprint
     netrc = netrc.netrc()
