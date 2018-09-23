@@ -162,24 +162,12 @@ if __name__ == "__main__":
         measurements = [ ]
         start_poll_time = time.time()
         site_data = poll_sites(sites,community)
-        print("len measurements = ", len(measurements))
         for k,v in site_data.items():
-          print ("v = ",v)
-          kk = pivot_sitedata(v,'eth')
-          print(" k = ",k)
-          print(" measurement = ", kk)
-          for n in kk:
+          for n in pivot_sitedata(v,'eth'):
              measurements.append(n)
-          print ("v = ",v)
-          kk = pivot_sitedata(v,'vti')
-          print(" k = ",k)
-          print(" measurement = ", kk)
-          for n in kk:
+          for n in pivot_sitedata(v,'vti'):
              measurements.append(n)
-          #measurements.append(pivot_sitedata(v,'eth'))
-          #measurements.append(pivot_sitedata(v,'vti'))
         try:
-          #print(measurements)
           client.write_points(measurements,time_precision='ms')
         except:
             pass
