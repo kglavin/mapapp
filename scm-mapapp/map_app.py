@@ -1,3 +1,4 @@
+import os
 import datetime
 import dash
 import dash_core_components as dcc
@@ -28,6 +29,8 @@ def generate_table(dataframe, max_rows=10):
 
 
 mapbox_access_token = "pk.eyJ1Ijoia2dsYXZpbiIsImEiOiJjamd6ZjgzZDkwZWJlMnFyNG1wN3ZlMXVwIn0.qygVV7-zi8IMX8wyxawEpA"
+mapbox_access_token = os.environ.get('MAPBOX_ACCESS_TOKEN', 'mapbox-token')
+
 realm = 'https://catfish3.riverbed.cc'
 hosts = ['kglavin-us', 'kglavin-eur', 'kglavin-asia' ]
 users = []
