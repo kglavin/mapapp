@@ -11,6 +11,7 @@ import gpslocation as gps
 from geojson import MultiLineString
 import netrc
 
+from interface_graphing import query_scmdata
 
 def generate_table(dataframe, max_rows=10):
     return html.Table(
@@ -138,6 +139,42 @@ def heading_html():
             className='row'
         )
 
+def if_stats_html():
+    sites = [ 'Kansas', 'Albuquerque', 'Memphis']
+    qd = {'id':'Albuquerque', 'if_name':'eth0', 'period':'1h' }
+    data = query_scmdata("ifstats", query_data=qd)
+
+    return html.Div( children = [  
+                  html.Div(
+                    dcc.Dropdown(
+                      id='if-stats-site',
+                      options=[{'label': i, 'value': i} for i in sites],
+                      value='Sites'
+                    )),
+                dcc.Graph(
+                    id='if-stats-interactions',
+                    figure={
+                        'data': [
+                         {
+                                'x': data.index,
+                                'y': data['in_octets'],
+                                'name': 'in_octets',
+                                'mode':'lines+markers',
+                                'marker': {'size': 6}
+                         },
+                         {
+                                'x': data.index,
+                                'y': data['out_octets'],
+                                'name': 'out_octets',
+                                'mode':'lines+markers',
+                                'marker': {'size': 6}
+                         },
+                        ]
+                    }
+                )],
+                className="twelve columns"
+           )
+
 def appliances_html(nodedf):
     return html.Div( children=[
                 html.H4(children='Appliances'),
@@ -177,6 +214,7 @@ def app_html(users, sitedf, nodedf, eventdf):
         heading_html(),
         orgs_html(users),
         map_html(sitedf),
+        if_stats_html(),
         html.Div(
             children=[        
             appliances_html(nodedf),
