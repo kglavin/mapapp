@@ -1,4 +1,5 @@
 from easysnmp import Session
+import multiprocessing as mp
 import netrc 
 import time
 from poller_snmp import mp_poll_sites, poll_sites, pivot_sitedata
@@ -31,11 +32,12 @@ if __name__ == "__main__":
     community = authTokens[2]
     client = InfluxDBClient(host='influxdb', port=8086)
     client.switch_database('scmdata')
+    pool = mp.Pool(processes=4)
 
     while True:
         measurements = [ ]
         start_poll_time = time.time()
-        site_data = mp_poll_sites(sites,community)
+        site_data = mp_poll_sites(pool,sites,community)
         for k,v in site_data.items():
           for n in pivot_sitedata(v,'eth'):
              measurements.append(n)

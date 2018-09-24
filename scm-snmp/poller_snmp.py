@@ -116,13 +116,13 @@ def poll_sites(sites,community='public'):
   return site_data
 
 
-def mp_poll_sites(sites,community='public'):
+def mp_poll_sites(pool,sites,community='public'):
   ''' given a dictionary of sites { 'id': x, 'hostname': y} and the associated ip addresses, use the provided community string to 
   collect the values for the set of ethernet and virtual tunnel interfaces that are on the target device
   using the python multiprocessing subsystem to process a number of the snmp polls in parallel, this will 
   mask some of the roundtrip latency that accumumaltes if we query each appliance serially (as well as the serial queries to 
   multiple snmp groups being made that this implementation does not address) '''
-  pool = mp.Pool(processes=4)
+  #pool = mp.Pool(processes=4)
   site_data = {}
   results = [pool.apply(poll_site, args=(k,v,community)) for k,v in sites.items()]
   for r in results:
@@ -157,57 +157,4 @@ def pivot_sitedata(sd,if_type='eth'):
       r.append(d)
       ind += 1
   return r
-
-if __name__ == "__main__":
-    import netrc 
-    import time
-    from time import gmtime, strftime
-    from influxdb import InfluxDBClient
-
-    import pprint
-    netrc = netrc.netrc()
-
-    sites = { 
-             'Memphis':'44.1.0.10',
-             'Kansas':'44.1.0.11',
-             'Dallas':'44.1.0.12',
-             'Denver':'44.1.0.13',
-             'Albuquerque':'44.1.0.14',
-             'ElPaso':'44.1.0.15',
-             'Houston':'44.1.0.16',
-             'NewOrleans':'44.1.0.17',
-             'SanAntonio':'44.1.0.18',
-             'Amsterdam':'44.1.0.21',
-             'Frankfurt':'44.1.0.23',
-             'Paris':'44.1.0.22',
-             'Bangkok':'44.1.0.31',
-             'HochiMihn':'44.1.0.33',
-             'KualaLumpar':'44.1.0.32',
-
-            }
-
-    authTokens = netrc.authenticators('scm-snmp')
-    community = authTokens[2]
-    client = InfluxDBClient(host='influxdb', port=8086)
-    client.switch_database('scmdata')
-
-    while True:
-        measurements = [ ]
-        start_poll_time = time.time()
-        site_data = poll_sites(sites,community)
-        for k,v in site_data.items():
-          for n in pivot_sitedata(v,'eth'):
-             measurements.append(n)
-          for n in pivot_sitedata(v,'vti'):
-             measurements.append(n)
-        try:
-          client.write_points(measurements,time_precision='ms')
-        except:
-            pass
-        now_time = time.time()
-        poll_time = now_time-start_poll_time
-        if int(poll_time) < 15:
-          time.sleep(15-int(poll_time))
-        else:
-          time.sleep(5)
 
