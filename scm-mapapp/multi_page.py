@@ -109,33 +109,24 @@ def gen_map(value):
               [dash.dependencies.Input('if-stats-site', 'value')])
 def gen_if_stats_graphs(value):
     figure = {}
-    qd = {'id':value, 'if_name':'eth0', 'period':'3m', 'limit':5 }
+    qd = {'id':value, 'if_name':'eth0', 'period':'1h'}
     data = query_scmdata("ifstats", query_data=qd)
     derived_data = pd.DataFrame()
     if data.size > 0:
-        print('type of data = ',type(data))
-        #print(data['in_octets'])
-        #print(data)
-        data['in_octets'] = pd.to_numeric(data['in_octets'], errors='coerce')
-        data['out_octets'] = pd.to_numeric(data['out_octets'], errors='coerce')
-        #derived_data['in_octets_rate'] = data['in_octets'].diff()
-        #derived_data['out_octets_rate'] = data['out_octets'].diff()
-        #print(derived_data['in_octets_rate'])
-        #print(derived_data)
-        #s = data['out_octets'].diff()
-        #data['out_octets_rate'] = s.values
+        data['in_octets_rate'] = pd.to_numeric(data['in_octets'], errors='coerce').diff()
+        data['out_octets_rate'] = pd.to_numeric(data['out_octets'], errors='coerce').diff()
         figure={
             'data': [{
                     'x': data.index,
-                    'y': data['in_octets'],
-                    'name': 'in_octets',
+                    'y': data['in_octets_rate'],
+                    'name': 'in_octets rate',
                     'mode':'lines',
                     'marker': {'size': 2}
                 },
                 {
                     'x': data.index,
-                    'y': data['out_octets'].diff(),
-                    'name': 'out_octets',
+                    'y': data['out_octets_rate'],
+                    'name': 'out_octets rate',
                     'mode':'lines',
                     'marker': {'size': 2}
                 },
