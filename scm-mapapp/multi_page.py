@@ -72,7 +72,7 @@ def create_map_dropdowns():
 
 def map_html():
     return html.Div( children = [  
-                html.Div(create_map_dropdowns()),
+                html.Div(create_map_dropdowns(), classname='row'),
                 dcc.Graph(id='sites-map')
                 ],
                 className="twelve columns"
