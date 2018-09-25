@@ -84,6 +84,26 @@ app.layout = html.Div([
 
 ])
 
+@app.callback(dash.dependencies.Output('map', 'figure'),
+              [dash.dependencies.Input('map-refresh', 'mr')])
+def gen_map(mr):
+    figure={       
+            'data': [ generate_tunnels(),generate_sites(sitedf)],
+            'layout': {   
+            'title': 'Sites',
+            'showlegend': False,
+            'mapbox': { 'accesstoken': mapbox_access_token,
+                        'style': 'mapbox://styles/kglavin/cjgzfhh2900072slet6ksq66d'
+                    },
+            'layers': [],
+            'center': dict(lat=0,lon=-180,),
+            'margin': {                                                                                                
+                        'l': 5, 'r': 5, 'b': 5, 't': 25
+                    },                                                                        
+            }
+    } 
+    return figure
+
 
 @app.callback(dash.dependencies.Output('if-stats-graph', 'figure'),
               [dash.dependencies.Input('if-stats-site', 'value')])
@@ -113,25 +133,6 @@ def gen_if_stats_graphs(value):
         }
     return figure
 
-@app.callback(dash.dependencies.Output('map', 'figure'),
-              [dash.dependencies.Input('map-refresh', 'mr')])
-def gen_map(mr):
-    figure={       
-            'data': [ generate_tunnels(),generate_sites(sitedf)],
-            'layout': {   
-            'title': 'Sites',
-            'showlegend': False,
-            'mapbox': { 'accesstoken': mapbox_access_token,
-                        'style': 'mapbox://styles/kglavin/cjgzfhh2900072slet6ksq66d'
-                    },
-            'layers': [],
-            'center': dict(lat=0,lon=-180,),
-            'margin': {                                                                                                
-                        'l': 5, 'r': 5, 'b': 5, 't': 25
-                    },                                                                        
-            }
-    } 
-    return figure
 
 
 @app.callback(dash.dependencies.Output('page-content', 'children'),
