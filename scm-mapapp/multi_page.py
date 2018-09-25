@@ -109,26 +109,27 @@ def gen_map(value):
               [dash.dependencies.Input('if-stats-site', 'value')])
 def gen_if_stats_graphs(value):
     figure = {}
-    qd = {'id':value, 'if_name':'eth0', 'period':'1h' }
+    qd = {'id':value, 'if_name':'eth0', 'period':'3m', 'limit':5 }
     data = query_scmdata("ifstats", query_data=qd)
     if data.size > 0:
         print('type of data = ',type(data))
-        s = data['in_octets'].diff()
-        data['in_octets_rate'] = s.values
-        s = data['out_octets'].diff()
-        data['out_octets_rate'] = s.values
+        print(data['in_octets'])
+        print(data)
+        #data['in_octets_rate'] = s.values
+        #s = data['out_octets'].diff()
+        #data['out_octets_rate'] = s.values
         figure={
             'data': [{
                     'x': data.index,
-                    'y': data['in_octets_rate'],
-                    'name': 'in_octets_rate',
+                    'y': data['in_octets'],
+                    'name': 'in_octets',
                     'mode':'lines',
                     'marker': {'size': 2}
                 },
                 {
                     'x': data.index,
-                    'y': data['out_octets_rate'],
-                    'name': 'out_octets_rate',
+                    'y': data['out_octets'],
+                    'name': 'out_octets',
                     'mode':'lines',
                     'marker': {'size': 2}
                 },
