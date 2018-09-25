@@ -36,6 +36,7 @@ def query_scmdata(measurement, query_data = {'period':'1m', 'limit':'50'}):
     print(query)
     result = client.query(query, chunked=True)
     column = next(iter(result))
+    
     data   = result[column]
     data.index = data.index.tz_convert('America/Los_Angeles')
     data.index = data.index.tz_localize(None)
