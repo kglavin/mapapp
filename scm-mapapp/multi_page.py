@@ -76,9 +76,6 @@ app.layout = html.Div([
         ]),
     html.Br(),
     html.Div(id='page-content'),
-    traffic_html(),
-    map_html(),
-    event_html(),
     footer_html()
 
 ])
