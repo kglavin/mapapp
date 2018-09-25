@@ -232,6 +232,7 @@ def app_html(users, sitedf, nodedf, eventdf):
     )
 
 if __name__ == '__main__':
+
     gpsdict = gps.gendict()
     netrc = netrc.netrc()
 
