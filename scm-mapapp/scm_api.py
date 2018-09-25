@@ -54,7 +54,7 @@ def generate_sites(sitedf):
             'lon': sitedf['lon'],
             'type': 'scattermapbox',
             'mode':'markers',
-            'marker':{ 'size':14, 'color': 'rgb(0, 225, 0)' },
+            'marker':{ 'size':3, 'color': 'rgb(0, 225, 0)' },
             'text': sitedf['site']
     }
     
