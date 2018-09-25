@@ -53,16 +53,31 @@ def event_html():
                 generate_table(eventdf,500),]
             )
 
+def create_map_dropdowns():
+    map_kinds = [ 'All Sites','Region 1', 'Region 2', 'Region 3']
+    map_attr2 = ['something', 'nothing']
+    drop1 = dcc.Dropdown(
+        options=[
+            options=[{'label': i, 'value': i} for i in map_kinds],
+            value='All Sites'
+        ],
+        id='map-refresh',
+        className='three columns offset-by-one'
+    )
+    drop2 = dcc.Dropdown(
+        options=[
+            options=[{'label': i, 'value': i} for i in map_attr2],
+            value='All Sites'
+        ],
+        id='map-attr2',
+        className='three columns offset-by-four'
+    )
+return [drop1, drop2]
+
 def map_html():
-    kinds = [ 'All Sites','Region 1', 'Region 2', 'Region 3']
     return html.Div( children = [  
-                html.Div(
-                    dcc.Dropdown(
-                      id='map-refresh',
-                      options=[{'label': i, 'value': i} for i in kinds],
-                      value='All Sites'
-                    )),
-                    dcc.Graph(id='sites-map')
+                html.Div(create_map_dropdowns()),
+                dcc.Graph(id='sites-map')
                 ],
                 className="twelve columns"
            )
