@@ -89,7 +89,7 @@ def gen_if_stats_graphs(value):
     #put graph generation in here
     qd = {'id':value, 'if_name':'eth0', 'period':'1h' }
     data = query_scmdata("ifstats", query_data=qd)
-    print('data query return ', typeof(data) )
+    print('data query return ', type(data) )
     data['in_octets_rate'] = data['in_octets']
     data['out_octets_rate'] = data['out_octets']
     figure={
