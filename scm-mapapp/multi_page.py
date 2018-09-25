@@ -20,24 +20,6 @@ sitedf = pd.DataFrame([],  columns =  ['site', 'lat', 'lon','leafs'])
 nodedf = pd.DataFrame([],  columns =  ['site','serial','router_id'])
 eventdf = pd.DataFrame([],  columns =  ['Time','utc', 'Message', 'Severity'])
 
-app.layout = html.Div([
-    heading_html(),
-    dcc.Location(id='url', refresh=False),
-    html.Div([
-        dcc.Link(html.Button('home', id='home_page'),href='/'),
-        dcc.Link(html.Button('map', id='map_page'),href='/map_page'),
-        dcc.Link(html.Button('traffic', id='traffic_page'),href='/traffic_page'),
-        dcc.Link(html.Button('event', id='event_page'),href='/event_page'),
-        ]),
-    html.Br(),
-    html.Div(id='page-content'),
-    traffic_html(),
-    map_html(),
-    event_html(),
-    footer_html()
-
-])
-
 def generate_table(dataframe, max_rows=10):
     return html.Table(
         # Header
@@ -82,6 +64,25 @@ def map_html():
                 'float': 'center',
                 'position': 'relative',
             })
+
+app.layout = html.Div([
+    heading_html(),
+    dcc.Location(id='url', refresh=False),
+    html.Div([
+        dcc.Link(html.Button('home', id='home_page'),href='/'),
+        dcc.Link(html.Button('map', id='map_page'),href='/map_page'),
+        dcc.Link(html.Button('traffic', id='traffic_page'),href='/traffic_page'),
+        dcc.Link(html.Button('event', id='event_page'),href='/event_page'),
+        ]),
+    html.Br(),
+    html.Div(id='page-content'),
+    traffic_html(),
+    map_html(),
+    event_html(),
+    footer_html()
+
+])
+
 
 @app.callback(dash.dependencies.Output('if-stats-graph', 'children'),
               [dash.dependencies.Input('if-stats-site', 'value')])
