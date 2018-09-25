@@ -112,6 +112,7 @@ def gen_if_stats_graphs(value):
     qd = {'id':value, 'if_name':'eth0', 'period':'1h' }
     data = query_scmdata("ifstats", query_data=qd)
     if data.size > 0:
+        print('type of data = ',type(data))
         data['in_octets_rate'] = data['in_octets'].diff()
         data['out_octets_rate'] = data['out_octets'].diff()
         figure={
