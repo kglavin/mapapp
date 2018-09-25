@@ -59,9 +59,9 @@ def map_html():
     return html.Div( children = [  
                 html.Div(
                     dcc.Dropdown(
-                        options=[[{'label': i, 'value': i} for i in map_kinds]],
-                        value='All Sites',
-                        id='map-refresh'
+                        id='map-refresh',
+                        options=[{'label': i, 'value': i} for i in map_kinds],
+                        value='All Sites'
                     ),
  #                   dcc.Dropdown(
  #                       options=[[{'label': i, 'value': i} for i in map_attr2]],
