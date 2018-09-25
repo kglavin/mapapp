@@ -16,6 +16,8 @@ from interface_graphing import query_scmdata
 
 
 app = dash.Dash(__name__)
+app.config.supress_callback_exceptions = True
+
 sitedf = pd.DataFrame([],  columns =  ['site', 'lat', 'lon','leafs'])
 nodedf = pd.DataFrame([],  columns =  ['site','serial','router_id'])
 eventdf = pd.DataFrame([],  columns =  ['Time','utc', 'Message', 'Severity'])
@@ -182,6 +184,5 @@ if __name__ == '__main__':
         get_eventlogs(eventdf,realm,user,pw) 
 
     server = app.server
-    app.config.supress_callback_exceptions = True
-
+    
     app.run_server(debug=True, host='0.0.0.0')
