@@ -63,11 +63,12 @@ def map_html():
                         value='All Sites',
                         id='map-refresh'
                     ),
-                    dcc.Dropdown(
-                        options=[[{'label': i, 'value': i} for i in map_attr2]],
-                        value='All Sites',
-                        id='map-attr2'
-                    )),
+ #                   dcc.Dropdown(
+ #                       options=[[{'label': i, 'value': i} for i in map_attr2]],
+ #                       value='All Sites',
+ #                       id='map-attr2'
+ #                   )
+                ),
                 dcc.Graph(id='sites-map')
                 ],
                 className="twelve columns"
