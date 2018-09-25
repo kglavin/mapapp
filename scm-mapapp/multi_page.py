@@ -40,7 +40,7 @@ def traffic_html():
                     dcc.Dropdown(
                       id='if-stats-site',
                       options=[{'label': i, 'value': i} for i in sites],
-                      value='site'
+                      value='Albuquerque'
                     )),
                     dcc.Graph(id='if-stats-graph')
                 ],
@@ -54,7 +54,7 @@ def event_html():
             )
 
 def map_html():
-    kinds = [ 'sites','reg1']
+    kinds = [ 'All Sites','Region 1', 'Region 2', 'Region 3']
     return html.Div( children = [  
                 html.Div(
                     dcc.Dropdown(
@@ -87,7 +87,6 @@ app.layout = html.Div([
 @app.callback(dash.dependencies.Output('sites-map', 'figure'),
               [dash.dependencies.Input('map-refresh', 'value')])
 def gen_map(value):
-    print("gen_map called")
     figure={       
             'data': [ generate_tunnels(),generate_sites(sitedf)],
             'layout': {   
