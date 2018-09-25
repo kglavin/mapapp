@@ -68,7 +68,7 @@ def create_map_dropdowns():
         id='map-attr2',
         className='three columns offset-by-four'
     )
-return [drop1, drop2]
+    return [drop1, drop2]
 
 def map_html():
     return html.Div( children = [  
