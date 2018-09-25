@@ -84,7 +84,7 @@ app.layout = html.Div([
 ])
 
 
-@app.callback(dash.dependencies.Output('if-stats-graph', 'children'),
+@app.callback(dash.dependencies.Output('if-stats-graph', 'figure'),
               [dash.dependencies.Input('if-stats-site', 'value')])
 def gen_if_stats_graphs(value):
     #put graph generation in here
@@ -111,7 +111,7 @@ def gen_if_stats_graphs(value):
     }
     return figure
 
-@app.callback(dash.dependencies.Output('map', 'children'),
+@app.callback(dash.dependencies.Output('map', 'figure'),
               [dash.dependencies.Input('map-refresh', 'value')])
 def gen_if_stats_graphs(value):
     figure={       
