@@ -35,9 +35,11 @@ def query_scmdata(measurement, query_data = {'period':'1m', 'limit':'50'}):
     query = f'''SELECT * FROM {measurement} WHERE {id_where} {if_name_where} {site_where} {status_where} {period_clause} {limit_clause}'''
     print(query)
     result = client.query(query, chunked=True)
-    column = next(iter(result))
-    
-    data   = result[column]
+    if len(result) > 0:
+        column = next(iter(result))
+        data   = result[column]
+    else:
+        data = pd.DataFrame()
     data.index = data.index.tz_convert('America/Los_Angeles')
     data.index = data.index.tz_localize(None)
     return data
