@@ -48,36 +48,15 @@ def generate_table(dataframe, max_rows=10):
 
 def traffic_html():
     sites = [ 'Kansas', 'Albuquerque', 'Memphis']
-    qd = {'id':'Albuquerque', 'if_name':'eth0', 'period':'1h' }
-    data = query_scmdata("ifstats", query_data=qd)
     return html.Div( children = [  
-                  html.Div(
+                html.Div(
                     dcc.Dropdown(
                       id='if-stats-site',
                       options=[{'label': i, 'value': i} for i in sites],
-                      value='Sites'
+                      value='site'
                     )),
-                dcc.Graph(
-                    id='if-stats-interactions',
-                    figure={
-                        'data': [
-                         {
-                                'x': data.index,
-                                'y': data['in_octets'],
-                                'name': 'in_octets',
-                                'mode':'lines+markers',
-                                'marker': {'size': 6}
-                         },
-                         {
-                                'x': data.index,
-                                'y': data['out_octets'],
-                                'name': 'out_octets',
-                                'mode':'lines+markers',
-                                'marker': {'size': 6}
-                         },
-                        ]
-                    }
-                )],
+                    dcc.Graph(id='if-stats-graph')
+                ],
                 className="twelve columns"
            )
 
@@ -92,7 +71,7 @@ def map_html():
                 html.Div(
                 className="twelve columns",
                 children=[ dcc.Graph(      
-                            id='graph',          
+                            id='map',          
                             figure={       
                                 'data': [ generate_tunnels(),generate_sites(sitedf)],
                                 'layout': {   
@@ -116,6 +95,34 @@ def map_html():
                 'float': 'center',
                 'position': 'relative',
             })
+
+@app.callback(dash.dependencies.Output('if-stats-graph', 'children'),
+              [dash.dependencies.Input('if-stats-site', 'value')])
+def display_page(value):
+    #put graph generation in here
+    qd = {'id':value, 'if_name':'eth0', 'period':'1h' }
+    data = query_scmdata("ifstats", query_data=qd)
+    data['in_octets_rate'] = data['in_octets'].diff()
+    data['out_octets_rate'] = data['out_octets'].diff()
+    figure={
+        'data': [{
+                    'x': data.index,
+                    'y': data['in_octets_rate'],
+                    'name': 'in_octets_rate',
+                    'mode':'lines',
+                    'marker': {'size': 6}
+                },
+                {
+                    'x': data.index,
+                    'y': data['out_octets_rate'],
+                    'name': 'out_octets_rate',
+                    'mode':'lnes',
+                    'marker': {'size': 6}
+                },
+                ]
+    }
+    return figure
+
 
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
