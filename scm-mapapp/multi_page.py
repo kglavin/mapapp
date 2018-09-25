@@ -70,24 +70,8 @@ def map_html():
     return html.Div([
                 html.Div(
                 className="twelve columns",
-                children=[ dcc.Graph(      
-                            id='map',          
-                            figure={       
-                                'data': [ generate_tunnels(),generate_sites(sitedf)],
-                                'layout': {   
-                                    'title': 'Sites',
-                                    'showlegend': False,
-                                    'mapbox': { 'accesstoken': mapbox_access_token,
-                                                'style': 'mapbox://styles/kglavin/cjgzfhh2900072slet6ksq66d'
-                                    },
-                                    'layers': [],
-                                    'center': dict(lat=0,lon=-180,),
-                                    'margin': {                                                                                                
-                                        'l': 5, 'r': 5, 'b': 5, 't': 25
-                                    },                                                                        
-                                }
-                            }         
-                            ),
+                children=[  html.Button('Refresh', id='map-refresh'),
+                            dcc.Graph(id='map'),
                         ]        
             )],
             style={
@@ -98,7 +82,7 @@ def map_html():
 
 @app.callback(dash.dependencies.Output('if-stats-graph', 'children'),
               [dash.dependencies.Input('if-stats-site', 'value')])
-def display_page(value):
+def gen_if_stats_graphs(value):
     #put graph generation in here
     qd = {'id':value, 'if_name':'eth0', 'period':'1h' }
     data = query_scmdata("ifstats", query_data=qd)
@@ -123,6 +107,26 @@ def display_page(value):
     }
     return figure
 
+@app.callback(dash.dependencies.Output('map', 'children'),
+              [dash.dependencies.Input('map-refresh', 'value')])
+def gen_if_stats_graphs(value):
+    figure={       
+            'data': [ generate_tunnels(),generate_sites(sitedf)],
+            'layout': {   
+            'title': 'Sites',
+            'showlegend': False,
+            'mapbox': { 'accesstoken': mapbox_access_token,
+                        'style': 'mapbox://styles/kglavin/cjgzfhh2900072slet6ksq66d'
+                    },
+            'layers': [],
+            'center': dict(lat=0,lon=-180,),
+            'margin': {                                                                                                
+                        'l': 5, 'r': 5, 'b': 5, 't': 25
+                    },                                                                        
+            }
+    } 
+    return figure
+
 
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
@@ -144,11 +148,13 @@ app.css.append_css({
     'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
 })
 
+
 @app.callback(Output('live-update-text', 'children'),
                 [Input('interval-component', 'n_intervals')])
 def update_time(n):
     t = datetime.datetime.now()
     return  ['Time: {}'.format(t)]
+
 
 if __name__ == '__main__':
     mapbox_access_token = "pk.eyJ1Ijoia2dsYXZpbiIsImEiOiJjamd6ZjgzZDkwZWJlMnFyNG1wN3ZlMXVwIn0.qygVV7-zi8IMX8wyxawEpA"
@@ -172,5 +178,6 @@ if __name__ == '__main__':
         get_eventlogs(eventdf,realm,user,pw) 
 
     server = app.server
+    app.config['suppress_callback_exceptions']=True
 
     app.run_server(debug=True, host='0.0.0.0')
