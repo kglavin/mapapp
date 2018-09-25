@@ -90,7 +90,7 @@ def gen_map(value):
     figure={       
             'data': [ generate_tunnels(),generate_sites(sitedf)],
             'layout': {   
-                'title': 'Sites',
+                'title': 'Status Map',
                 'showlegend': False,
                 'mapbox': { 'accesstoken': mapbox_access_token,
                             'style': 'mapbox://styles/kglavin/cjgzfhh2900072slet6ksq66d'
@@ -112,22 +112,22 @@ def gen_if_stats_graphs(value):
     qd = {'id':value, 'if_name':'eth0', 'period':'1h' }
     data = query_scmdata("ifstats", query_data=qd)
     if data.size > 0:
-        data['in_octets_rate'] = data['in_octets']
-        data['out_octets_rate'] = data['out_octets']
+        data['in_octets_rate'] = data['in_octets'].diff()
+        data['out_octets_rate'] = data['out_octets'].diff()
         figure={
             'data': [{
                     'x': data.index,
-                    'y': data['in_octets'],
-                    'name': 'in_octets',
+                    'y': data['in_octets_rate'],
+                    'name': 'in_octets_rate',
                     'mode':'lines',
-                    'marker': {'size': 6}
+                    'marker': {'size': 2}
                 },
                 {
                     'x': data.index,
-                    'y': data['out_octets'],
-                    'name': 'out_octets',
-                    'mode':'lnes',
-                    'marker': {'size': 6}
+                    'y': data['out_octets_rate'],
+                    'name': 'out_octets_rate',
+                    'mode':'lines',
+                    'marker': {'size': 2}
                 },
                 ]
         }
