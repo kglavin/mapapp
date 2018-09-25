@@ -131,21 +131,21 @@ def gen_if_stats_graphs(value):
     return figure
 
 
-@app.callback(dash.dependencies.Output('page-content', 'children'),
-              [dash.dependencies.Input('url', 'pathname')])
-def display_page(pathname):
-    if pathname is None:
-        r = html.Div('/')
-    elif pathname in '/':
-        r = html.Div("/home_page")
-    else:
-        if pathname in '/map_page':
-            r = map_html()
-        if pathname in '/traffic_page':
-            r = traffic_html()
-        if pathname in '/event_page':
-            r = event_html()
-    return r
+#@app.callback(dash.dependencies.Output('page-content', 'children'),
+#              [dash.dependencies.Input('url', 'pathname')])
+#def display_page(pathname):
+#    if pathname is None:
+#        r = html.Div('/')
+#    elif pathname in '/':
+#        r = html.Div("/home_page")
+#    else:
+#        if pathname in '/map_page':
+#            r = map_html()
+#        if pathname in '/traffic_page':
+#            r = traffic_html()
+#        if pathname in '/event_page':
+#            r = event_html()
+#    return r
 
 app.css.append_css({
     'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
