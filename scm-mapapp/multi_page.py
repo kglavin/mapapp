@@ -63,8 +63,7 @@ def create_map_dropdowns():
         className='three columns offset-by-one'
     )
     drop2 = dcc.Dropdown(
-        options=[
-            options=[{'label': i, 'value': i} for i in map_attr2]],
+        options=[[{'label': i, 'value': i} for i in map_attr2]],
         value='All Sites',
         id='map-attr2',
         className='three columns offset-by-four'
