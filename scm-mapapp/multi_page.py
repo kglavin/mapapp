@@ -84,7 +84,7 @@ def map_html():
                         value='All Sites',
                         id='map-attr2',
                         className='three columns offset-by-four'
-                    ))
+                    )),
                 dcc.Graph(id='sites-map')
                 ],
                 className="twelve columns"
