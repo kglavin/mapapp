@@ -75,9 +75,9 @@ app.layout = html.Div([
         dcc.Link(html.Button('event', id='event_page'),href='/event_page'),
         ]),
     html.Br(),
-#    html.Div(id='page-content'),
-    map_html(),
-    traffic_html(),
+    html.Div(id='page-content'),
+    #map_html(),
+    #traffic_html(),
     footer_html()
 
 ])
@@ -86,7 +86,6 @@ app.layout = html.Div([
 @app.callback(dash.dependencies.Output('if-stats-graph', 'figure'),
               [dash.dependencies.Input('if-stats-site', 'value')])
 def gen_if_stats_graphs(value):
-    #put graph generation in here
     figure = {}
     qd = {'id':value, 'if_name':'eth0', 'period':'1h' }
     data = query_scmdata("ifstats", query_data=qd)
@@ -133,21 +132,21 @@ def gen_if_stats_graphs(value):
     return figure
 
 
-#@app.callback(dash.dependencies.Output('page-content', 'children'),
-#              [dash.dependencies.Input('url', 'pathname')])
-#def display_page(pathname):
-#    if pathname is None:
-#        r = html.Div('/')
-#    elif pathname in '/':
-#        r = html.Div("/home_page")
-#    else:
-#        if pathname in '/map_page':
-#            r = map_html()
-#        if pathname in '/traffic_page':
-#            r = traffic_html()
-#        if pathname in '/event_page':
-#            r = event_html()
-#    return r
+@app.callback(dash.dependencies.Output('page-content', 'children'),
+              [dash.dependencies.Input('url', 'pathname')])
+def display_page(pathname):
+    if pathname is None:
+        r = html.Div('/')
+    elif pathname in '/':
+        r = html.Div("/home_page")
+    else:
+        if pathname in '/map_page':
+            r = map_html()
+        if pathname in '/traffic_page':
+            r = traffic_html()
+        if pathname in '/event_page':
+            r = event_html()
+    return r
 
 app.css.append_css({
     'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
@@ -183,6 +182,6 @@ if __name__ == '__main__':
         get_eventlogs(eventdf,realm,user,pw) 
 
     server = app.server
-    app.config['suppress_callback_exceptions']=True
+    app.config.supress_callback_exceptions = True
 
     app.run_server(debug=True, host='0.0.0.0')
