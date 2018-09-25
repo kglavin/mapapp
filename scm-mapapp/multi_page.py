@@ -116,6 +116,8 @@ def gen_if_stats_graphs(value):
         print('type of data = ',type(data))
         #print(data['in_octets'])
         #print(data)
+        data['in_octets'] = pd.to_numeric(data['in_octets'], errors='coerce')
+        data['out_octets'] = pd.to_numeric(data['out_octets'], errors='coerce')
         #derived_data['in_octets_rate'] = data['in_octets'].diff()
         #derived_data['out_octets_rate'] = data['out_octets'].diff()
         #print(derived_data['in_octets_rate'])
