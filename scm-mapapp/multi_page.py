@@ -75,7 +75,9 @@ app.layout = html.Div([
         dcc.Link(html.Button('event', id='event_page'),href='/event_page'),
         ]),
     html.Br(),
-    html.Div(id='page-content'),
+#    html.Div(id='page-content'),
+    map_html(),
+    traffic_html(),
     footer_html()
 
 ])
