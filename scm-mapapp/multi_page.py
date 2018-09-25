@@ -54,15 +54,18 @@ def event_html():
             )
 
 def map_html():
+    kinds = [ 'sites','reg1']
     return html.Div( children = [  
                 html.Div(
-                        html.Button('Refresh', id='map-refresh')
-                        ),
-                        dcc.Graph(id='sites-map')
+                    dcc.Dropdown(
+                      id='map-refresh',
+                      options=[{'label': i, 'value': i} for i in kinds],
+                      value='site'
+                    )),
+                    dcc.Graph(id='sites-map')
                 ],
                 className="twelve columns"
-            )
-
+           )
 
 app.layout = html.Div([
     heading_html(),
