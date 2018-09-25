@@ -111,11 +111,15 @@ def gen_if_stats_graphs(value):
     figure = {}
     qd = {'id':value, 'if_name':'eth0', 'period':'3m', 'limit':5 }
     data = query_scmdata("ifstats", query_data=qd)
+    derived_data = pd.DataFrame()
     if data.size > 0:
         print('type of data = ',type(data))
         print(data['in_octets'])
         print(data)
-        #data['in_octets_rate'] = s.values
+        derived_data['in_octets_rate'] = data['in_octets'].diff()
+        derived_data['out_octets_rate'] = data['out_octets'].diff()
+        print(derived_data['in_octets_rate'])
+        print(derived_data)
         #s = data['out_octets'].diff()
         #data['out_octets_rate'] = s.values
         figure={
