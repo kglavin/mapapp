@@ -114,8 +114,8 @@ def gen_if_stats_graphs(value):
     return figure
 
 @app.callback(dash.dependencies.Output('map', 'figure'),
-              [dash.dependencies.Input('map-refresh', 'value')])
-def gen_map(value):
+              [dash.dependencies.Input('map-refresh', 'mr')])
+def gen_map(mr):
     figure={       
             'data': [ generate_tunnels(),generate_sites(sitedf)],
             'layout': {   
