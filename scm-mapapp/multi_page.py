@@ -63,11 +63,6 @@ def map_html():
                         options=[{'label': i, 'value': i} for i in map_kinds],
                         value='All Sites'
                     ),
- #                   dcc.Dropdown(
- #                       options=[[{'label': i, 'value': i} for i in map_attr2]],
- #                       value='All Sites',
- #                       id='map-attr2'
- #                   )
                 ),
                 dcc.Graph(id='sites-map')
                 ],
@@ -85,8 +80,6 @@ app.layout = html.Div([
         ]),
     html.Br(),
     html.Div(id='page-content'),
-    #map_html(),
-    #traffic_html(),
     footer_html()
 
 ])
@@ -95,7 +88,7 @@ app.layout = html.Div([
               [dash.dependencies.Input('map-refresh', 'value')])
 def gen_map(value):
     figure={       
-            'data': [ generate_tunnels(),generate_sites(sitedf)],
+            'data': [ generate_tunnels(sitedf),generate_sites(sitedf)],
             'layout': {   
                 'title': 'Status Map',
                 'showlegend': False,
@@ -140,8 +133,6 @@ def gen_if_stats_graphs(value):
                 ]
         }
     return figure
-
-
 
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])

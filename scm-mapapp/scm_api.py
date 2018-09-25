@@ -39,7 +39,7 @@ def get_eventlogs(eventdf,realm, user, pw):
                                     a['severity']]
     return
 
-def generate_tunnels():
+def generate_tunnels(sitedf):
     return {                                                     
             'lat': [52.37, 50.12 ],
             'lon': [4.9 , 8.68 ],
@@ -54,7 +54,7 @@ def generate_sites(sitedf):
             'lon': sitedf['lon'],
             'type': 'scattermapbox',
             'mode':'markers',
-            'marker':{ 'size':3, 'color': 'rgb(0, 225, 0)' },
+            'marker':{ 'size':10, 'color': 'rgb(0, 225, 0)' },
             'text': sitedf['site']
     }
     
