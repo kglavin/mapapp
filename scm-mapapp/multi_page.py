@@ -87,13 +87,14 @@ app.layout = html.Div([
               [dash.dependencies.Input('if-stats-site', 'value')])
 def gen_if_stats_graphs(value):
     #put graph generation in here
+    figure = {}
     qd = {'id':value, 'if_name':'eth0', 'period':'1h' }
     data = query_scmdata("ifstats", query_data=qd)
-    print('data query return ', type(data) )
-    data['in_octets_rate'] = data['in_octets']
-    data['out_octets_rate'] = data['out_octets']
-    figure={
-        'data': [{
+    if data.len() > 0:
+        data['in_octets_rate'] = data['in_octets']
+        data['out_octets_rate'] = data['out_octets']
+        figure={
+            'data': [{
                     'x': data.index,
                     'y': data['in_octets'],
                     'name': 'in_octets',
@@ -108,7 +109,7 @@ def gen_if_stats_graphs(value):
                     'marker': {'size': 6}
                 },
                 ]
-    }
+        }
     return figure
 
 @app.callback(dash.dependencies.Output('map', 'figure'),
