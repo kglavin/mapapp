@@ -71,6 +71,8 @@ def create_map_dropdowns():
     return [drop1, drop2]
 
 def map_html():
+    map_kinds = [ 'All Sites','Region 1', 'Region 2', 'Region 3']
+    map_attr2 = ['something', 'nothing']
     return html.Div( children = [  
                 html.Div(
                     dcc.Dropdown(
