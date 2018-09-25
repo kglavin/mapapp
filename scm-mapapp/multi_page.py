@@ -141,14 +141,14 @@ def gen_if_stats_graphs(value):
 def display_page(pathname):
     if pathname is None:
         r = html.Div('/')
-    elif pathname in '/':
+    elif pathname == '/':
         r = html.Div("/home_page")
     else:
-        if pathname in '/map_page':
+        if pathname == '/map_page':
             r = map_html()
-        if pathname in '/traffic_page':
+        if pathname == '/traffic_page':
             r = traffic_html()
-        if pathname in '/event_page':
+        if pathname == '/event_page':
             r = event_html()
     return r
 
