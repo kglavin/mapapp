@@ -38,12 +38,11 @@ def query_scmdata(measurement, query_data = {'period':'1m', 'limit':'50'}):
     if len(result) > 0:
         column = next(iter(result))
         data   = result[column]
+        data.index = data.index.tz_convert('America/Los_Angeles')
+        data.index = data.index.tz_localize(None)
     else:
         data = pd.DataFrame()
-    data.index = data.index.tz_convert('America/Los_Angeles')
-    data.index = data.index.tz_localize(None)
     return data
-
 
 
 if __name__ == "__main__":
