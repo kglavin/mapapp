@@ -85,8 +85,8 @@ app.layout = html.Div([
 ])
 
 @app.callback(dash.dependencies.Output('sites-map', 'figure'),
-              [dash.dependencies.Input('map-refresh', 'mr')])
-def gen_map(mr):
+              [dash.dependencies.Input('map-refresh', 'value')])
+def gen_map(value):
     print("gen_map called")
     figure={       
             'data': [ generate_tunnels(),generate_sites(sitedf)],
