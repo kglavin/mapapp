@@ -54,18 +54,15 @@ def event_html():
             )
 
 def map_html():
-    return html.Div([
+    return html.Div( children = [  
                 html.Div(
-                className="twelve columns",
-                children=[  html.Button('Refresh', id='map-refresh'),
-                            dcc.Graph(id='sites-map'),
-                        ]        
-            )],
-            style={
-                'height':600,
-                'float': 'center',
-                'position': 'relative',
-            })
+                        html.Button('Refresh', id='map-refresh')
+                        ),
+                        dcc.Graph(id='sites-map')
+                ],
+                className="twelve columns"
+            )
+
 
 app.layout = html.Div([
     heading_html(),
