@@ -1,26 +1,20 @@
-
+import os
+import datetime
+import time
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
-from scmbase_html import heading_html, footer_html
-from scm_api import get_sites, get_nodes, get_eventlogs, generate_tunnels, generate_sites
-import datetime
-import time
 import pandas as pd
-import scm as scm
-import gpslocation as gps
 import netrc
-import os
+import scm as scm
+from scm_api import sitedf, nodedf, eventdf, get_sites, get_nodes, get_eventlogs, generate_tunnels, generate_sites,find_tunnel_relationships
+from scmbase_html import heading_html, footer_html
 from interface_graphing import query_scmdata
 
-
 app = dash.Dash(__name__)
+# needed to keep dash happy about complex dependancies with multi-page app.
 app.config.supress_callback_exceptions = True
-
-sitedf = pd.DataFrame([],  columns =  ['site', 'lat', 'lon','leafs'])
-nodedf = pd.DataFrame([],  columns =  ['site','serial','router_id'])
-eventdf = pd.DataFrame([],  columns =  ['Time','utc', 'Message', 'Severity'])
 
 def generate_table(dataframe, max_rows=10):
     return html.Table(
@@ -73,10 +67,10 @@ app.layout = html.Div([
     heading_html(),
     dcc.Location(id='url', refresh=False),
     html.Div([
-        dcc.Link(html.Button('home', id='home_page'),href='/'),
-        dcc.Link(html.Button('map', id='map_page'),href='/map_page'),
-        dcc.Link(html.Button('traffic', id='traffic_page'),href='/traffic_page'),
-        dcc.Link(html.Button('event', id='event_page'),href='/event_page'),
+        dcc.Link(html.Button('home',    id='home_page'),    href='/'),
+        dcc.Link(html.Button('map',     id='map_page'),     href='/map_page'),
+        dcc.Link(html.Button('traffic', id='traffic_page'), href='/traffic_page'),
+        dcc.Link(html.Button('event',   id='event_page'),   href='/event_page'),
         ]),
     html.Br(),
     html.Div(id='page-content'),
@@ -87,8 +81,10 @@ app.layout = html.Div([
 @app.callback(dash.dependencies.Output('sites-map', 'figure'),
               [dash.dependencies.Input('map-refresh', 'value')])
 def gen_map(value):
+    tun_list = generate_tunnels(sitedf)
+    tun_list.append(generate_sites(sitedf))
     figure={       
-            'data': [ generate_tunnels(sitedf),generate_sites(sitedf)],
+            'data': tun_list,
             'layout': {   
                 'title': 'Status Map',
                 'showlegend': False,
@@ -171,7 +167,6 @@ if __name__ == '__main__':
     users = []
     pw=[]
 
-    gpsdict = gps.gendict()
     netrc = netrc.netrc()
 
     for host in hosts:
@@ -183,6 +178,5 @@ if __name__ == '__main__':
         get_nodes(nodedf, sitedf, realm, user, pw)
         get_eventlogs(eventdf,realm,user,pw) 
 
-    server = app.server
     
     app.run_server(debug=True, host='0.0.0.0')

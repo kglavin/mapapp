@@ -8,6 +8,11 @@ import gpslocation as gps
 
 gpsdict = gps.gendict()
 
+sitedf = pd.DataFrame([],  columns =  ['site', 'lat', 'lon','leafs'])
+nodedf = pd.DataFrame([],  columns =  ['site','serial','router_id'])
+eventdf = pd.DataFrame([],  columns =  ['Time','utc', 'Message', 'Severity'])
+
+
 def get_sites(sitedf, realm, user, pw):
     r = scm.get('sites', realm, user,pw)
     if r.status_code == 200:
@@ -19,6 +24,17 @@ def get_sites(sitedf, realm, user, pw):
             sitedf.loc[a['id']] = [a['city'], lat, lon,a['sitelink_leafs']]
     return
 
+def get_sites_dict(site_dict, realm, user, pw):
+    r = scm.get('sites', realm, user,pw)
+    if r.status_code == 200:
+        f = r.json()
+        for a in f['items']:
+            p = gpsdict[a['city']]
+            lat = p['lat']
+            lon = p['lon']
+            site_dict[a['id']] = { 'site':a['city'], 'lat':lat, 'lon':lon, 'leafs': a['sitelink_leafs']}
+    return
+
 def get_nodes(nodedf, sitedf, realm, user, pw):
     r = scm.get('nodes', realm, user,pw)
     if r.status_code == 200:
@@ -26,6 +42,15 @@ def get_nodes(nodedf, sitedf, realm, user, pw):
         for a in f['items']:
             city = sitedf.loc[a['site']]['site']
             nodedf.loc[a['id']] = [city, a['serial'], a['router_id']] 
+    return
+
+def get_nodes_dict(node_dict, site_dict, realm, user, pw):
+    r = scm.get('nodes', realm, user,pw)
+    if r.status_code == 200:
+        f = r.json()
+        for a in f['items']:
+            city = site_dict[a['site']]['site']
+            node_dict[a['id']] = { 'site':city, 'serial':a['serial'], 'router_id':a['router_id']}
     return
 
 def get_eventlogs(eventdf,realm, user, pw):
@@ -39,14 +64,65 @@ def get_eventlogs(eventdf,realm, user, pw):
                                     a['severity']]
     return
 
-def generate_tunnels(sitedf):
-    return {                                                     
-            'lat': [52.37, 50.12 ],
-            'lon': [4.9 , 8.68 ],
+def get_eventlogs_dict(event_dict,realm, user, pw):
+    r = scm.get('eventlogs', realm, user,pw)
+    if r.status_code == 200:
+        f = r.json()
+        for a in f['items']:
+            event_dict[a['id']] = { 'time':datetime.datetime.fromtimestamp(a['utc']).strftime('%c'),
+                                    'utc':a['utc'],
+                                    'Message':a['msg'],
+                                    'Severity':a['severity']}
+    return
+
+
+def find_tunnel_relationships(sitedf):
+    ll = []
+    r = []
+    for s in sitedf.index:
+         if len(sitedf.loc[s]['leafs']) > 0:
+             ll.append((s,sitedf.loc[s]['leafs']))
+    for a in ll:
+        (h,sl) = a
+        h_city = sitedf.loc[h]['site']
+        for s in sl:
+            s_city =sitedf.loc[s]['site']
+            r.append(((h_city,sitedf.loc[h]['lat'],sitedf.loc[h]['lon']),
+                      (s_city,sitedf.loc[s]['lat'],sitedf.loc[s]['lon'])))
+    return r
+
+
+def scattermapbox_line(a_lat, a_lon, z_lat, z_lon):
+    return { 
+            'lat': [a_lat, z_lat ],
+            'lon': [a_lon , z_lon ],
             'type': 'scattermapbox',
             'mode':'lines',
             'line':{ 'size':1, 'color': 'rgb(255, 0, 0)' },
-    }
+            }
+
+def generate_tunnels(sitedf):
+    r = find_tunnel_relationships(sitedf)
+    lines = []
+    for e in r:
+        ((a_name, a_lat, a_lon),(z_name, z_lat, z_lon)) = e 
+        lines.append(scattermapbox_line(a_lat, a_lon, z_lat, z_lon))
+    return lines
+
+#    return [{                                                     
+#            'lat': [52.37, 50.12 ],
+#            'lon': [4.9 , 8.68 ],
+#            'type': 'scattermapbox',
+#            'mode':'lines',
+#            'line':{ 'size':1, 'color': 'rgb(255, 0, 0)' },
+#              },
+#            {                                                     
+#            'lat': [52.37, 48.85 ],
+#            'lon': [4.9 , 2.35 ],
+#            'type': 'scattermapbox',
+#            'mode':'lines',
+#            'line':{ 'size':1, 'color': 'rgb(255, 0, 0)' },
+#            }]
 
 def generate_sites(sitedf):
     return {                                                     
@@ -57,4 +133,5 @@ def generate_sites(sitedf):
             'marker':{ 'size':10, 'color': 'rgb(0, 225, 0)' },
             'text': sitedf['site']
     }
+
     
