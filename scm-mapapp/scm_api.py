@@ -78,11 +78,11 @@ def get_eventlogs_dict(event_dict,realm, user, pw, region=0):
     return
 
 
-def find_tunnel_relationships(sitedf):
+def find_tunnel_relationships(sitedf,region=0):
     ll = []
     r = []
     for s in sitedf.index:
-         if len(sitedf.loc[s]['leafs']) > 0:
+         if sitedf.loc[s]['region'] == region and len(sitedf.loc[s]['leafs']) > 0:
              ll.append((s,sitedf.loc[s]['leafs']))
     for a in ll:
         (h,sl) = a
@@ -103,8 +103,8 @@ def scattermapbox_line(a_lat, a_lon, z_lat, z_lon):
             'line':{ 'size':1, 'color': 'rgb(255, 0, 0)' },
             }
 
-def generate_tunnels(sitedf):
-    r = find_tunnel_relationships(sitedf)
+def generate_tunnels(sitedf, region=0):
+    r = find_tunnel_relationships(sitedf,region=0)
     lines = []
     for e in r:
         ((a_name, a_lat, a_lon),(z_name, z_lat, z_lon)) = e 

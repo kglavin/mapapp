@@ -50,13 +50,12 @@ def event_html():
 def map_html():
     opts = [ {'label':'All Sites', 'value': 0} ]
     opts.extend([{'label': 'Region '+str(i), 'value': i} for i in globals()['regions']])
-    print(opts)
     return html.Div( children = [  
                 html.Div(
                     dcc.Dropdown(
                         id='map-refresh',
                         options=opts,
-                        value='0'
+                        value='All Sites'
                     ),
                 ),
                 dcc.Graph(id='sites-map')
@@ -82,7 +81,7 @@ app.layout = html.Div([
 @app.callback(dash.dependencies.Output('sites-map', 'figure'),
               [dash.dependencies.Input('map-refresh', 'value')])
 def gen_map(value):
-    tun_list = generate_tunnels(sitedf)
+    tun_list = generate_tunnels(sitedf,region=value)
     tun_list.append(generate_sites(sitedf, region=value))
     figure={       
             'data': tun_list,
