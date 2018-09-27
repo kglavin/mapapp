@@ -74,7 +74,7 @@ def get_eventlogs_dict(event_dict,realm, user, pw, region=0):
                                     'utc':a['utc'],
                                     'Message':a['msg'],
                                     'Severity':a['severity'],
-                                    ,'region':region}
+                                    'region':region}
     return
 
 
