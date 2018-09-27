@@ -85,12 +85,10 @@ def find_tunnel_relationships(sitedf,region=0):
         if region == 0:
             if len(sitedf.loc[s]['leafs']) > 0 :
                 ll.append((s,sitedf.loc[s]['leafs']))
-                print('region 0', s)
         else:
          if sitedf.loc[s]['region'] == region :
             if len(sitedf.loc[s]['leafs']) > 0 : 
                 ll.append((s,sitedf.loc[s]['leafs']))
-                print('region ',region, s)
     for a in ll:
         (h,sl) = a
         h_city = sitedf.loc[h]['site']
