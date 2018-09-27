@@ -95,9 +95,9 @@ def gen_map(value):
                 'height': 720,
                 'mapbox': { 'accesstoken': mapbox_access_token,
                             'style': 'mapbox://styles/kglavin/cjgzfhh2900072slet6ksq66d'
+                            'center': dict(lat=mid_lat,lon=mid_lon,),
+                            'layers': [],
                     },
-                'layers': [],
-                'center': dict(lat=0,lon=0,),
                 'margin': {                                                                                                
                         'l': 5, 'r': 5, 'b': 5, 't': 25
                 },                                                                        
