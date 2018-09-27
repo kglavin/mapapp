@@ -27,8 +27,8 @@ def generate_table(dataframe, max_rows=10):
         ]) for i in range(min(len(dataframe), max_rows))]
     )
 
-def traffic_html():
-    sites = [ 'Kansas', 'Albuquerque', 'Memphis']
+def traffic_html(sitedf):
+    sites = sitedf['city'].tolist()
     return html.Div( children = [  
                 html.Div(
                     dcc.Dropdown(
@@ -88,6 +88,7 @@ def gen_map(value):
             'layout': {   
                 'title': 'Status Map',
                 'showlegend': False,
+                'height': 720,
                 'mapbox': { 'accesstoken': mapbox_access_token,
                             'style': 'mapbox://styles/kglavin/cjgzfhh2900072slet6ksq66d'
                     },
