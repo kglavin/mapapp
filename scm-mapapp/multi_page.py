@@ -8,7 +8,7 @@ from dash.dependencies import Input, Output, State
 import pandas as pd
 import netrc
 import scm as scm
-from scm_api import sitedf, nodedf, eventdf, get_sites, get_nodes, get_eventlogs, generate_tunnels, generate_sites,find_tunnel_relationships
+from scm_api import sitedf, nodedf, eventdf, get_sites, get_nodes, get_eventlogs, generate_tunnels, generate_sites,find_tunnel_relationships,latlon_midpoint
 from scmbase_html import heading_html, footer_html
 from interface_graphing import query_scmdata
 
@@ -85,6 +85,7 @@ def gen_map(value):
     tun_list.append(generate_sites(sitedf, region=value))
     #TODO: based on the generated site list we should change the center of focus 
     #TODO: can we focus the zoom of the map to just contain the points in the set?
+    (mid_lat, mid_lon) = latlon_midpoint(sitedf,region=value)
     figure={       
             'data': tun_list,
             'layout': {   
@@ -95,7 +96,7 @@ def gen_map(value):
                             'style': 'mapbox://styles/kglavin/cjgzfhh2900072slet6ksq66d'
                     },
                 'layers': [],
-                'center': dict(lat=0,lon=-180,),
+                'center': dict(lat=mid_lat,lon=mid_lon,),
                 'margin': {                                                                                                
                         'l': 5, 'r': 5, 'b': 5, 't': 25
                 },                                                                        

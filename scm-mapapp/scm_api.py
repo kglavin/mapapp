@@ -4,6 +4,7 @@ import datetime
 import pandas as pd
 import scm as scm
 import gpslocation as gps
+from math import sin, cos, atan2, sqrt, radians, degrees
 
 
 gpsdict = gps.gendict()
@@ -152,6 +153,32 @@ def generate_sites(sitedf, region=0):
             'text': sitedf['site']
         }
     return l
+
+def latlon_midpoint(sitedf, region=0):
+    ''' see http://www.geomidpoint.com/calculation.html'''
+    if region == 0:
+        lat = sitedf['lat']
+        lon = sitedf['lon']
+    else:
+        lat = sitedf.loc[sitedf['region'] == region]['lat']
+        lon = sitedf.loc[sitedf['region'] == region]['lon']
+
+    x=0.0
+    y=0.0
+    z=0.0
+
+    for s in lat.index:
+        la = float(radians(lat.loc[s]['lat']))
+        lo = float(radians(lon.loc[s]['lon']))
+        x += cos(la) * cos(lo)
+        y += cos(la) * sin(lo)
+        z += sin(la)
+
+    x = float(x / len(lat.count))
+    y = float(y / len(lat.count))
+    z = float(z / len(lat.count))
+    #(lat, lon)
+    return (degrees(atan2(z, sqrt(x * x + y * y))), degrees(atan2(y, x)))
 
 
     
