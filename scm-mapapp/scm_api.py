@@ -176,9 +176,9 @@ def latlon_midpoint(sitedf, region=0):
         y += cos(la) * sin(lo)
         z += sin(la)
 
-    x = float(x / len(lat.count))
-    y = float(y / len(lat.count))
-    z = float(z / len(lat.count))
+    x = float(x / lat.count)
+    y = float(y / lat.count)
+    z = float(z / lat.count)
     #(lat, lon)
     return (degrees(atan2(z, sqrt(x * x + y * y))), degrees(atan2(y, x)))
 
