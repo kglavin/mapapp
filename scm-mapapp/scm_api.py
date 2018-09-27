@@ -111,7 +111,7 @@ def scattermapbox_line(a_lat, a_lon, z_lat, z_lon):
             }
 
 def generate_tunnels(sitedf, region=0):
-    r = find_tunnel_relationships(sitedf,region=0)
+    r = find_tunnel_relationships(sitedf,region)
     lines = []
     for e in r:
         ((a_name, a_lat, a_lon),(z_name, z_lat, z_lon)) = e 
