@@ -142,7 +142,7 @@ def display_page(pathname):
         if pathname == '/map_page':
             r = map_html()
         if pathname == '/traffic_page':
-            r = traffic_html()
+            r = traffic_html(sitedf)
         if pathname == '/event_page':
             r = event_html()
     return r
