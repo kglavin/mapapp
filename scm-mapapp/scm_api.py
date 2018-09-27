@@ -163,13 +163,15 @@ def latlon_midpoint(sitedf, region=0):
         lat = sitedf.loc[sitedf['region'] == region]['lat']
         lon = sitedf.loc[sitedf['region'] == region]['lon']
 
+    print('lat=',lat)
+    print('lon=',lon)
     x=0.0
     y=0.0
     z=0.0
 
     for s in lat.index:
-        la = float(radians(lat.loc[s]['lat']))
-        lo = float(radians(lon.loc[s]['lon']))
+        la = float(radians(lat.loc[s]))
+        lo = float(radians(lon.loc[s]))
         x += cos(la) * cos(lo)
         y += cos(la) * sin(lo)
         z += sin(la)
