@@ -55,7 +55,7 @@ def map_html():
                     dcc.Dropdown(
                         id='map-refresh',
                         options=opts,
-                        value='All Sites'
+                        value=0
                     ),
                 ),
                 dcc.Graph(id='sites-map')
