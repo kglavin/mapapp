@@ -28,7 +28,7 @@ def generate_table(dataframe, max_rows=10):
     )
 
 def traffic_html(sitedf):
-    sites = sitedf['city'].tolist()
+    sites = sitedf['site'].tolist()
     return html.Div( children = [  
                 html.Div(
                     dcc.Dropdown(
