@@ -48,13 +48,13 @@ def event_html():
             )
 
 def map_html():
-    map_kinds = [ 'All Sites','Region 1', 'Region 2', 'Region 3']
+    map_kinds = globals()['regions']
     map_attr2 = ['something', 'nothing']
     return html.Div( children = [  
                 html.Div(
                     dcc.Dropdown(
                         id='map-refresh',
-                        options=[{'label': i, 'value': i} for i in map_kinds],
+                        options=[ {'label':'All Sites', 'value':0}].extend([{'label': 'Region '+str(i), 'value': i} for i in map_kinds]),
                         value='All Sites'
                     ),
                 ),
@@ -82,7 +82,7 @@ app.layout = html.Div([
               [dash.dependencies.Input('map-refresh', 'value')])
 def gen_map(value):
     tun_list = generate_tunnels(sitedf)
-    tun_list.append(generate_sites(sitedf))
+    tun_list.append(generate_sites(sitedf, region=value))
     figure={       
             'data': tun_list,
             'layout': {   
@@ -167,17 +167,22 @@ if __name__ == '__main__':
     hosts = ['kglavin-us', 'kglavin-eur', 'kglavin-asia' ]
     users = []
     pw=[]
+    regions = []
+
 
     netrc = netrc.netrc()
 
+    region = 1
     for host in hosts:
         authTokens = netrc.authenticators(host)
         user = authTokens[0]
         users.append(user)
         pw = authTokens[2]
-        get_sites(sitedf, realm, user, pw)
-        get_nodes(nodedf, sitedf, realm, user, pw)
-        get_eventlogs(eventdf,realm,user,pw) 
+        regions.append(region)
+        get_sites(sitedf, realm, user, pw, region)
+        get_nodes(nodedf, sitedf, realm, user, pw,region)
+        get_eventlogs(eventdf,realm,user,pw,region) 
+        region += 1
 
     
     app.run_server(debug=True, host='0.0.0.0')

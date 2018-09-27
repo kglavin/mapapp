@@ -8,12 +8,12 @@ import gpslocation as gps
 
 gpsdict = gps.gendict()
 
-sitedf = pd.DataFrame([],  columns =  ['site', 'lat', 'lon','leafs'])
-nodedf = pd.DataFrame([],  columns =  ['site','serial','router_id'])
-eventdf = pd.DataFrame([],  columns =  ['Time','utc', 'Message', 'Severity'])
+sitedf = pd.DataFrame([],  columns =  ['site', 'lat', 'lon','leafs','region'])
+nodedf = pd.DataFrame([],  columns =  ['site','serial','router_id','region'])
+eventdf = pd.DataFrame([],  columns =  ['Time','utc', 'Message', 'Severity','region'])
 
 
-def get_sites(sitedf, realm, user, pw):
+def get_sites(sitedf, realm, user, pw, region=0):
     r = scm.get('sites', realm, user,pw)
     if r.status_code == 200:
         f = r.json()
@@ -21,10 +21,10 @@ def get_sites(sitedf, realm, user, pw):
             p = gpsdict[a['city']]
             lat = p['lat']
             lon = p['lon']
-            sitedf.loc[a['id']] = [a['city'], lat, lon,a['sitelink_leafs']]
+            sitedf.loc[a['id']] = [a['city'], lat, lon,a['sitelink_leafs'],region]
     return
 
-def get_sites_dict(site_dict, realm, user, pw):
+def get_sites_dict(site_dict, realm, user, pw, region=0):
     r = scm.get('sites', realm, user,pw)
     if r.status_code == 200:
         f = r.json()
@@ -32,28 +32,28 @@ def get_sites_dict(site_dict, realm, user, pw):
             p = gpsdict[a['city']]
             lat = p['lat']
             lon = p['lon']
-            site_dict[a['id']] = { 'site':a['city'], 'lat':lat, 'lon':lon, 'leafs': a['sitelink_leafs']}
+            site_dict[a['id']] = { 'site':a['city'], 'lat':lat, 'lon':lon, 'leafs': a['sitelink_leafs'],'region':region}
     return
 
-def get_nodes(nodedf, sitedf, realm, user, pw):
+def get_nodes(nodedf, sitedf, realm, user, pw, region=0):
     r = scm.get('nodes', realm, user,pw)
     if r.status_code == 200:
         f = r.json()
         for a in f['items']:
             city = sitedf.loc[a['site']]['site']
-            nodedf.loc[a['id']] = [city, a['serial'], a['router_id']] 
+            nodedf.loc[a['id']] = [city, a['serial'], a['router_id'],region] 
     return
 
-def get_nodes_dict(node_dict, site_dict, realm, user, pw):
+def get_nodes_dict(node_dict, site_dict, realm, user, pw, regions=0):
     r = scm.get('nodes', realm, user,pw)
     if r.status_code == 200:
         f = r.json()
         for a in f['items']:
             city = site_dict[a['site']]['site']
-            node_dict[a['id']] = { 'site':city, 'serial':a['serial'], 'router_id':a['router_id']}
+            node_dict[a['id']] = { 'site':city, 'serial':a['serial'], 'router_id':a['router_id'],'region':region}
     return
 
-def get_eventlogs(eventdf,realm, user, pw):
+def get_eventlogs(eventdf,realm, user, pw, region=0):
     r = scm.get('eventlogs', realm, user,pw)
     if r.status_code == 200:
         f = r.json()
@@ -61,10 +61,11 @@ def get_eventlogs(eventdf,realm, user, pw):
             eventdf.loc[a['id']] = [datetime.datetime.fromtimestamp(a['utc']).strftime('%c'),
                                     a['utc'],
                                     a['msg'],
-                                    a['severity']]
+                                    a['severity'],
+                                    region]
     return
 
-def get_eventlogs_dict(event_dict,realm, user, pw):
+def get_eventlogs_dict(event_dict,realm, user, pw, region=0):
     r = scm.get('eventlogs', realm, user,pw)
     if r.status_code == 200:
         f = r.json()
@@ -72,7 +73,8 @@ def get_eventlogs_dict(event_dict,realm, user, pw):
             event_dict[a['id']] = { 'time':datetime.datetime.fromtimestamp(a['utc']).strftime('%c'),
                                     'utc':a['utc'],
                                     'Message':a['msg'],
-                                    'Severity':a['severity']}
+                                    'Severity':a['severity'],
+                                    ,'region':region}
     return
 
 
@@ -124,14 +126,27 @@ def generate_tunnels(sitedf):
 #            'line':{ 'size':1, 'color': 'rgb(255, 0, 0)' },
 #            }]
 
-def generate_sites(sitedf):
-    return {                                                     
+def generate_sites(sitedf, region=0):
+    '''region=0 is all sites'''
+    if region == 0:
+        l = {                                                     
             'lat': sitedf['lat'],
             'lon': sitedf['lon'],
             'type': 'scattermapbox',
             'mode':'markers',
             'marker':{ 'size':10, 'color': 'rgb(0, 225, 0)' },
             'text': sitedf['site']
-    }
+        }
+    else:
+        l = {                                                     
+            'lat': sitedf.loc[sitedf['region'] == region]['lat'],
+            'lon': sitedf.loc[sitedf['region'] == region]['lon'],
+            'type': 'scattermapbox',
+            'mode':'markers',
+            'marker':{ 'size':10, 'color': 'rgb(0, 225, 0)' },
+            'text': sitedf['site']
+        }
+    return l
+
 
     
