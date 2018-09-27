@@ -86,6 +86,7 @@ def gen_map(value):
     #TODO: based on the generated site list we should change the center of focus 
     #TODO: can we focus the zoom of the map to just contain the points in the set?
     (mid_lat, mid_lon) = latlon_midpoint(sitedf,region=value)
+    print(mid_lat,mid_lon)
     figure={       
             'data': tun_list,
             'layout': {   
