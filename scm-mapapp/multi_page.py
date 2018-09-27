@@ -50,6 +50,7 @@ def event_html():
 def map_html():
     map_kinds = globals()['regions']
     map_attr2 = ['something', 'nothing']
+    print(map_kinds)
     return html.Div( children = [  
                 html.Div(
                     dcc.Dropdown(
