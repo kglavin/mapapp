@@ -84,6 +84,7 @@ def gen_map(value):
     tun_list = generate_tunnels(sitedf,region=value)
     tun_list.append(generate_sites(sitedf, region=value))
     #TODO: based on the generated site list we should change the center of focus 
+    #TODO: can we focus the zoom of the map to just contain the points in the set?
     figure={       
             'data': tun_list,
             'layout': {   
