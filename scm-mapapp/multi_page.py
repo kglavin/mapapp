@@ -48,11 +48,9 @@ def event_html():
             )
 
 def map_html():
-    map_kinds = 
     opts = [ {'label':'All Sites', 'value': 0} ]
     opts.extend([{'label': 'Region '+str(i), 'value': i} for i in globals()['regions']])
     print(opts)
-    map_attr2 = ['something', 'nothing']
     return html.Div( children = [  
                 html.Div(
                     dcc.Dropdown(
