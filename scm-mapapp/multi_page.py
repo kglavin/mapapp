@@ -193,7 +193,7 @@ if __name__ == '__main__':
         sitedf = get_sites_proxy(proxy)
         #get_nodes(nodedf, sitedf, realm, user, pw,region)
         nodedf = get_sites_proxy(proxy)
-        get_eventlogs(eventdf,realm,user,pw,region)
+        #get_eventlogs(eventdf,realm,user,pw,region)
         eventdf = get_eventlogs_proxy(proxy)
         region += 1
 
