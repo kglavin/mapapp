@@ -30,6 +30,7 @@ def generate_table(dataframe, max_rows=10):
 def traffic_html(sitedf):
     sites = sitedf['site'].tolist()
     interfaces = [ 0,1,2,3,4]
+    tun=['eth','tun']
     duration = [ '1h', '30m', '5m', '24h', '7d']
     gtype=['Packets','Octets']
     return html.Div( children = [  
@@ -41,9 +42,15 @@ def traffic_html(sitedf):
                       className='three columns'
                     ),
                     dcc.Dropdown(
+                      id='if-stats-tun',
+                      options=[{'label': i, 'value': i } for i in tun ],
+                      value='eth',
+                      className='one column'
+                    ),
+                    dcc.Dropdown(
                       id='if-stats-eth',
-                      options=[{'label': "interface "+str(i), 'value': 'eth'+str(i) } for i in interfaces ],
-                      value='eth0',
+                      options=[{'label': "if-"+str(i), 'value': i } for i in interfaces ],
+                      value='0',
                       className='three columns'
                     ),
                     dcc.Dropdown(
@@ -157,13 +164,14 @@ def gen_map(value):
 
 @app.callback(output=dash.dependencies.Output('if-stats-graph', 'figure'),
               inputs=[dash.dependencies.Input('if-stats-site', 'value'),
+              dash.dependencies.Input('if-stats-tun', 'value'),
               dash.dependencies.Input('if-stats-eth', 'value'),
               dash.dependencies.Input('if-stats-duration', 'value'),
               dash.dependencies.Input('if-stats-packets', 'value')
               ])
-def gen_if_stats_graphs(site,eth,duration,packets):
+def gen_if_stats_graphs(site,tun,eth,duration,packets):
     figure = {}
-    qd = {'id':site, 'if_name':eth, 'period':duration}
+    qd = {'id':site, 'if_name':str(tun)+str(eth), 'period':duration}
     data = query_scmdata("ifstats", query_data=qd)
     derived_data = pd.DataFrame()
     if data.size > 0:
