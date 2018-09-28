@@ -2,6 +2,7 @@
 import os
 import datetime
 import pandas as pd
+import requests as rq
 import scm as scm
 import gpslocation as gps
 from math import sin, cos, atan2, sqrt, radians, degrees
@@ -9,10 +10,16 @@ from math import sin, cos, atan2, sqrt, radians, degrees
 
 gpsdict = gps.gendict()
 
-sitedf = pd.DataFrame([],  columns =  ['site', 'lat', 'lon','leafs','region'])
-nodedf = pd.DataFrame([],  columns =  ['site','serial','router_id','region'])
-eventdf = pd.DataFrame([],  columns =  ['Time','utc', 'Message', 'Severity','region'])
+def init_sitedf():
+    return pd.DataFrame([],  columns =  ['site', 'lat', 'lon','leafs','region'])
+def init_nodedf():
+    return pd.DataFrame([],  columns =  ['site','serial','router_id','region'])
+def init_eventdf():
+    return pd.DataFrame([],  columns =  ['Time','utc', 'Message', 'Severity','region'])
 
+sitedf = init_sitedf()
+nodedf = init_nodedf()
+eventdf = init_eventdf()
 
 def get_sites(sitedf, realm, user, pw, region=0):
     r = scm.get('sites', realm, user,pw)
@@ -24,6 +31,13 @@ def get_sites(sitedf, realm, user, pw, region=0):
             lon = p['lon']
             sitedf.loc[a['id']] = [a['city'], lat, lon,a['sitelink_leafs'],region]
     return
+
+def get_sites_proxy(proxy,user="",pw=""):
+    r = rq.get(proxy + '/api/sites', auth=(user,pw))
+    if r.status_code == 200:
+        return pd.read_json(r.json(), orient='index')
+    else:
+        return init_sitesdf()
 
 def get_sites_dict(site_dict, realm, user, pw, region=0):
     r = scm.get('sites', realm, user,pw)
@@ -44,6 +58,13 @@ def get_nodes(nodedf, sitedf, realm, user, pw, region=0):
             city = sitedf.loc[a['site']]['site']
             nodedf.loc[a['id']] = [city, a['serial'], a['router_id'],region] 
     return
+
+def get_nodes_proxy(proxy,user="",pw=""):
+    r = rq.get( proxy + '/api/nodes', auth=(user,pw))
+    if r.status_code == 200:
+        return pd.read_json(r.json(), orient='index')
+    else:
+        return init_nodesdf()
 
 def get_nodes_dict(node_dict, site_dict, realm, user, pw, regions=0):
     r = scm.get('nodes', realm, user,pw)
@@ -66,8 +87,16 @@ def get_eventlogs(eventdf,realm, user, pw, region=0):
                                     region]
     return
 
+
+def get_eventlogs_proxy(proxy, user="",pw=""):
+    r = rq.get( proxy + '/api/events', auth=(user,pw))
+    if r.status_code == 200:
+        return pd.read_json(r.json(), orient='index')
+    else:
+        return init_eventsdf()
+
 def get_eventlogs_dict(event_dict,realm, user, pw, region=0):
-    r = scm.get('eventlogs', realm, user,pw)
+    r = scm.get('eventlogs', proxy, user,pw)
     if r.status_code == 200:
         f = r.json()
         for a in f['items']:
@@ -116,21 +145,6 @@ def generate_tunnels(sitedf, region=0):
         ((a_name, a_lat, a_lon),(z_name, z_lat, z_lon)) = e 
         lines.append(scattermapbox_line(a_lat, a_lon, z_lat, z_lon))
     return lines
-
-#    return [{                                                     
-#            'lat': [52.37, 50.12 ],
-#            'lon': [4.9 , 8.68 ],
-#            'type': 'scattermapbox',
-#            'mode':'lines',
-#            'line':{ 'size':1, 'color': 'rgb(255, 0, 0)' },
-#              },
-#            {                                                     
-#            'lat': [52.37, 48.85 ],
-#            'lon': [4.9 , 2.35 ],
-#            'type': 'scattermapbox',
-#            'mode':'lines',
-#            'line':{ 'size':1, 'color': 'rgb(255, 0, 0)' },
-#            }]
 
 def generate_sites(sitedf, region=0):
     '''region=0 is all sites'''

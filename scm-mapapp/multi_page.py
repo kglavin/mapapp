@@ -8,7 +8,7 @@ from dash.dependencies import Input, Output, State
 import pandas as pd
 import netrc
 import scm as scm
-from scm_api import sitedf, nodedf, eventdf, get_sites, get_nodes, get_eventlogs, generate_tunnels, generate_sites,find_tunnel_relationships,latlon_midpoint
+from scm_api import sitedf, nodedf, eventdf, get_sites_proxy, get_nodes_proxy, get_eventlogs_proxy, generate_tunnels, generate_sites,find_tunnel_relationships,latlon_midpoint
 from scmbase_html import heading_html, footer_html
 from interface_graphing import query_scmdata
 
@@ -81,6 +81,10 @@ app.layout = html.Div([
 @app.callback(dash.dependencies.Output('sites-map', 'figure'),
               [dash.dependencies.Input('map-refresh', 'value')])
 def gen_map(value):
+    ##TODO
+    ## for each map update hit the local proxy to get the most recently polled sitesdf
+    # this may still be stale data on the proxy but its responsive data. 
+    sitesdf = get_sites_proxy(globals()['proxy'])
     tun_list = generate_tunnels(sitedf,region=value)
     tun_list.append(generate_sites(sitedf, region=value))
     #TODO: based on the generated site list we should change the center of focus 
@@ -172,6 +176,7 @@ if __name__ == '__main__':
     users = []
     pw=[]
     regions = []
+    proxy = "http://127.0.0.1:8040"
 
 
     netrc = netrc.netrc()
@@ -183,9 +188,13 @@ if __name__ == '__main__':
         users.append(user)
         pw = authTokens[2]
         regions.append(region)
-        get_sites(sitedf, realm, user, pw, region)
-        get_nodes(nodedf, sitedf, realm, user, pw,region)
-        get_eventlogs(eventdf,realm,user,pw,region) 
+        ## TODO need to change to get_sites_proxy(proxy,user="",pw="")
+        #get_sites(sitedf, realm, user, pw, region)
+        sitedf = get_sites_proxy(proxy)
+        #get_nodes(nodedf, sitedf, realm, user, pw,region)
+        nodedf = get_sites_proxy(proxy)
+        get_eventlogs(eventdf,realm,user,pw,region)
+        eventdf = get_eventlogs_proxy(proxy)
         region += 1
 
     
