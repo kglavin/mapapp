@@ -33,7 +33,7 @@ def api_sites():
             return "200"
 
 @app.route('/api/sites/snmp_details',methods = ['GET', 'POST','DELETE'])
-def api_sites():
+def api_snmp_details():
     if request.method == 'GET':
         s = globals()['sites_snmpdf'].to_json(orient='index')
         resp = Response(s, status=200, mimetype='application/json')
