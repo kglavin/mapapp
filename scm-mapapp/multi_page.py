@@ -203,7 +203,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                 },
                 ]
         }
-    return figure
+        return figure
 
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
