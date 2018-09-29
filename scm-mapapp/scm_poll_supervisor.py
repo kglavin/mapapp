@@ -40,7 +40,8 @@ if __name__ == "__main__":
             get_eventlogs(eventdf,realm,user,pw,region)
             region += 1
 
-        gen_sites_snmp(sites_snmpdf,uplinkdf)   
+        gen_sites_snmp(sites_snmpdf,uplinkdf) 
+        print(sites_snmpdf)  
         post_sites_snmp(proxy, sites_snmpdf)
 
         try:    
