@@ -94,7 +94,6 @@ def scm_buttons():
     return [ b1, b2, b3, b4]
 
 def scm_layout():
-
     r =   html.Div(children =[
                     heading_html(),
                     dcc.Location(id='url', refresh=False),
