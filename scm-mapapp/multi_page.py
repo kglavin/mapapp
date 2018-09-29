@@ -112,7 +112,6 @@ def gen_map(region):
     ## for each map update hit the local proxy to get the most recently polled sitesdf
     # this may still be stale data on the proxy but its responsive data. 
     sitedf = get_sites_proxy(globals()['proxy'])
-    print("in gen_map ", sitedf)
     tun_list = generate_tunnels(sitedf,region)
     tun_list.append(generate_sites(sitedf, region))
     #based on the generated site list we should change the center of focus 
@@ -185,25 +184,27 @@ def gen_if_stats_data(site,tun,eth,duration,packets):
               ])
 def gen_if_stats_graphs(site,tun,eth,duration,packets):
         data=gen_if_stats_data(site,tun,eth,duration,packets)
-
-        # two lines on the graph ( and in and an out)
-        figure={
-            'data': [{
+        if len(data) > 0:
+            # two lines on the graph ( and in and an out)
+            figure={
+                'data': [{
                     'x': data.index,
                     'y': data['in'],
                     'name': 'In '+packets,
                     'mode':'lines',
                     'marker': {'size': 2}
-                },
-                {
+                    },
+                    {
                     'x': data.index,
                     'y': data['out'],
                     'name': 'Out '+packets,
                     'mode':'lines',
                     'marker': {'size': 2}
-                },
-                ]
-        }
+                    },
+                    ]
+            }
+        else: 
+            figure = {}
         return figure
 
 @app.callback(dash.dependencies.Output('page-content', 'children'),
