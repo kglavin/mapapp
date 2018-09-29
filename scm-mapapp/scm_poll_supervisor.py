@@ -56,10 +56,9 @@ if __name__ == "__main__":
             get_eventlogs(eventdf,realm,user,pw,region) 
             region += 1
         try:
-            print('About to Post ', sitedf.count(), nodedf.count(), eventdf.count())
-            r = rq.post(proxy+'/api/sites', json=sitedf.to_json())
-            r = rq.post(proxy+'/api/nodes', json=nodedf.to_json())
-            r = rq.post(proxy+'/api/eventlogs', json=eventdf.to_json())
+            r = rq.post(proxy+'/api/sites', json=sitedf.to_json(orient='index'))
+            r = rq.post(proxy+'/api/nodes', json=nodedf.to_json(orient='index'))
+            r = rq.post(proxy+'/api/eventlogs', json=eventdf.to_json(orient='index'))
         except:
             pass
         now_time = time.time()

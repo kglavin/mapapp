@@ -29,13 +29,44 @@ def generate_table(dataframe, max_rows=10):
 
 def traffic_html(sitedf):
     sites = sitedf['site'].tolist()
+    interfaces = [ 0,1,2,3,4]
+    tun=['eth','tun']
+    duration = [ '1h', '30m', '5m', '24h', '7d']
+    gtype=['Packets','Octets']
     return html.Div( children = [  
-                html.Div(
+                html.Div( children = [ 
                     dcc.Dropdown(
                       id='if-stats-site',
                       options=[{'label': i, 'value': i} for i in sites],
-                      value='Albuquerque'
-                    )),
+                      value='Albuquerque',
+                      className='three columns'
+                    ),
+                    dcc.Dropdown(
+                      id='if-stats-tun',
+                      options=[{'label': i, 'value': i } for i in tun ],
+                      value='eth',
+                      className='one column'
+                    ),
+                    dcc.Dropdown(
+                      id='if-stats-eth',
+                      options=[{'label': "if-"+str(i), 'value': i } for i in interfaces ],
+                      value='0',
+                      className='three columns'
+                    ),
+                    dcc.Dropdown(
+                      id='if-stats-duration',
+                      options=[{'label': "Past Duration: "+i, 'value': i } for i in duration ],
+                      value='1h',
+                      className='three columns'
+                    ),
+                    dcc.Dropdown(
+                      id='if-stats-packets',
+                      options=[{'label': "Type: "+i, 'value': i } for i in gtype ],
+                      value='Octets',
+                      className='three columns'
+                    )],
+                    className='row'
+                    ),
                     dcc.Graph(id='if-stats-graph')
                 ],
                 className="twelve columns"
@@ -90,18 +121,39 @@ def gen_map(value):
     #TODO: based on the generated site list we should change the center of focus 
     #TODO: can we focus the zoom of the map to just contain the points in the set?
     (mid_lat, mid_lon) = latlon_midpoint(sitedf,region=value)
+    # for global networks, this calculation althught mathamatically correct is not pleasing so limit center to no be about 50 degrees of latitde
+    if (mid_lat > 50):
+        mid_lat = 50
+    if (mid_lat < -50):
+        mid_lad = -50
 
+    mbox = { 'accesstoken': mapbox_access_token,
+             'style': 'mapbox://styles/kglavin/cjgzfhh2900072slet6ksq66d',
+             'center': dict(lat=mid_lat,lon=mid_lon,),
+             'layers': [],
+             'minZoom': 0
+           }
+
+    #if region > 0:
+    #    mbox['zoom'] = 3
+
+
+    m_point = {
+            'lat': [mid_lat],
+            'lon': [mid_lon],
+            'type': 'scattermapbox',
+            'mode':'markers',
+            'marker':{ 'size':10, 'symbol':'triangle', 'color': 'rgb(0, 0, 255)' },
+            'text': "Center"
+        }
+    tun_list.append(m_point)
     figure={       
             'data': tun_list,
             'layout': {   
                 'title': 'Status Map',
                 'showlegend': False,
                 'height': 720,
-                'mapbox': { 'accesstoken': mapbox_access_token,
-                            'style': 'mapbox://styles/kglavin/cjgzfhh2900072slet6ksq66d',
-                            'center': dict(lat=mid_lat,lon=mid_lon,),
-                            'layers': [],
-                    },
+                'mapbox': mbox,
                 'margin': {                                                                                                
                         'l': 5, 'r': 5, 'b': 5, 't': 25
                 },                                                                        
@@ -110,28 +162,38 @@ def gen_map(value):
     return figure
 
 
-@app.callback(dash.dependencies.Output('if-stats-graph', 'figure'),
-              [dash.dependencies.Input('if-stats-site', 'value')])
-def gen_if_stats_graphs(value):
+@app.callback(output=dash.dependencies.Output('if-stats-graph', 'figure'),
+              inputs=[dash.dependencies.Input('if-stats-site', 'value'),
+              dash.dependencies.Input('if-stats-tun', 'value'),
+              dash.dependencies.Input('if-stats-eth', 'value'),
+              dash.dependencies.Input('if-stats-duration', 'value'),
+              dash.dependencies.Input('if-stats-packets', 'value')
+              ])
+def gen_if_stats_graphs(site,tun,eth,duration,packets):
     figure = {}
-    qd = {'id':value, 'if_name':'eth0', 'period':'1h'}
+    qd = {'id':site, 'if_name':str(tun)+str(eth), 'period':duration}
     data = query_scmdata("ifstats", query_data=qd)
     derived_data = pd.DataFrame()
     if data.size > 0:
-        data['in_octets_rate'] = pd.to_numeric(data['in_octets'], errors='coerce').diff()
-        data['out_octets_rate'] = pd.to_numeric(data['out_octets'], errors='coerce').diff()
+        if packets in 'Octets':
+            data['in'] = pd.to_numeric(data['in_octets'], errors='coerce').diff()
+            data['out'] = pd.to_numeric(data['out_octets'], errors='coerce').diff()
+        else:
+            data['in'] = pd.to_numeric(data['in_unicast'], errors='coerce').diff()
+            data['out'] = pd.to_numeric(data['out_unicast'], errors='coerce').diff()
+
         figure={
             'data': [{
                     'x': data.index,
-                    'y': data['in_octets_rate'],
-                    'name': 'in_octets rate',
+                    'y': data['in'],
+                    'name': 'In '+packets,
                     'mode':'lines',
                     'marker': {'size': 2}
                 },
                 {
                     'x': data.index,
-                    'y': data['out_octets_rate'],
-                    'name': 'out_octets rate',
+                    'y': data['out'],
+                    'name': 'Out '+packets,
                     'mode':'lines',
                     'marker': {'size': 2}
                 },
@@ -188,14 +250,11 @@ if __name__ == '__main__':
         users.append(user)
         pw = authTokens[2]
         regions.append(region)
-        ## TODO need to change to get_sites_proxy(proxy,user="",pw="")
-        #get_sites(sitedf, realm, user, pw, region)
-        sitedf = get_sites_proxy(proxy)
-        #get_nodes(nodedf, sitedf, realm, user, pw,region)
-        nodedf = get_sites_proxy(proxy)
-        get_eventlogs(eventdf,realm,user,pw,region)
-        eventdf = get_eventlogs_proxy(proxy)
         region += 1
 
     
+    sitedf = get_sites_proxy(proxy)
+    nodedf = get_nodes_proxy(proxy)
+    eventdf = get_eventlogs_proxy(proxy)
+
     app.run_server(debug=True, host='0.0.0.0')

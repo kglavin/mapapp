@@ -35,7 +35,8 @@ def get_sites(sitedf, realm, user, pw, region=0):
 def get_sites_proxy(proxy,user="",pw=""):
     r = rq.get(proxy + '/api/sites', auth=(user,pw))
     if r.status_code == 200:
-        return pd.read_json(r.json(), orient='index')
+        df =  pd.read_json(r.content, orient='index')
+        return df
     else:
         return init_sitesdf()
 
@@ -62,7 +63,7 @@ def get_nodes(nodedf, sitedf, realm, user, pw, region=0):
 def get_nodes_proxy(proxy,user="",pw=""):
     r = rq.get( proxy + '/api/nodes', auth=(user,pw))
     if r.status_code == 200:
-        return pd.read_json(r.json(), orient='index')
+        return pd.read_json(r.content, orient='index')
     else:
         return init_nodesdf()
 
@@ -89,11 +90,11 @@ def get_eventlogs(eventdf,realm, user, pw, region=0):
 
 
 def get_eventlogs_proxy(proxy, user="",pw=""):
-    r = rq.get( proxy + '/api/events', auth=(user,pw))
+    r = rq.get( proxy + '/api/eventlogs', auth=(user,pw))
     if r.status_code == 200:
-        return pd.read_json(r.json(), orient='index')
+        return pd.read_json(r.content, orient='index')
     else:
-        return init_eventsdf()
+        return init_eventdf()
 
 def get_eventlogs_dict(event_dict,realm, user, pw, region=0):
     r = scm.get('eventlogs', proxy, user,pw)
@@ -111,6 +112,8 @@ def get_eventlogs_dict(event_dict,realm, user, pw, region=0):
 def find_tunnel_relationships(sitedf,region=0):
     ll = []
     r = []
+    if len(sitedf) < 1:
+        return r
     for s in sitedf.index:
         if region == 0:
             if len(sitedf.loc[s]['leafs']) > 0 :
@@ -139,8 +142,10 @@ def scattermapbox_line(a_lat, a_lon, z_lat, z_lon):
             }
 
 def generate_tunnels(sitedf, region=0):
-    r = find_tunnel_relationships(sitedf,region)
     lines = []
+    if len(sitedf) < 1:
+        return lines
+    r = find_tunnel_relationships(sitedf,region)
     for e in r:
         ((a_name, a_lat, a_lon),(z_name, z_lat, z_lon)) = e 
         lines.append(scattermapbox_line(a_lat, a_lon, z_lat, z_lon))
@@ -148,6 +153,8 @@ def generate_tunnels(sitedf, region=0):
 
 def generate_sites(sitedf, region=0):
     '''region=0 is all sites'''
+    if len(sitedf)<1:
+        return {}
     if region == 0:
         l = {                                                     
             'lat': sitedf['lat'],
@@ -170,6 +177,8 @@ def generate_sites(sitedf, region=0):
 
 def latlon_midpoint(sitedf, region=0):
     ''' see http://www.geomidpoint.com/calculation.html'''
+    if len(sitedf) < 1:
+        return(0,-180)
     if region == 0:
         lat = sitedf['lat']
         lon = sitedf['lon']
@@ -177,8 +186,6 @@ def latlon_midpoint(sitedf, region=0):
         lat = sitedf.loc[sitedf['region'] == region]['lat']
         lon = sitedf.loc[sitedf['region'] == region]['lon']
 
-    print('lat=',lat)
-    print('lon=',lon)
     x=0.0
     y=0.0
     z=0.0
