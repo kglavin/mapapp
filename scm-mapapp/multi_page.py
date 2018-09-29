@@ -116,7 +116,7 @@ def gen_map(region):
     tun_list = generate_tunnels(sitedf,region)
     tun_list.append(generate_sites(sitedf, region))
     #based on the generated site list we should change the center of focus 
-    (mid_lat, mid_lon) = latlon_midpoint(sitedf,region=value)
+    (mid_lat, mid_lon) = latlon_midpoint(sitedf,region)
     
     #TODO: can we focus the zoom of the map to just contain the points in the set?
     # for global networks, this calculation although mathamatically correct is not pleasing so limit center to no be about 50 degrees of latitde
