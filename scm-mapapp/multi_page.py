@@ -112,6 +112,7 @@ def gen_map(region):
     ## for each map update hit the local proxy to get the most recently polled sitesdf
     # this may still be stale data on the proxy but its responsive data. 
     sitedf = get_sites_proxy(globals()['proxy'])
+    print("in gen_map ", sitedf)
     tun_list = generate_tunnels(sitedf,region)
     tun_list.append(generate_sites(sitedf, region))
     #based on the generated site list we should change the center of focus 
