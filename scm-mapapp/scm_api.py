@@ -109,7 +109,7 @@ def gen_sites_snmp(sites_snmpdf,uplinkdf):
         sites_snmpdf.loc[i] = row
     return 
 
-def post_sites(proxy, sites_snmpdf):
+def post_sites_snmp(proxy, sites_snmpdf):
     r = rq.post(proxy+'/api/sites/snmp_details', json=sites_snmpdf.to_json(orient='index'))
     return
 
