@@ -24,13 +24,29 @@ def api_sites():
     elif request.method == 'POST':
         if request.content_type == 'application/json':
             globals()['sitedf'] = pd.read_json(request.get_json(), orient='index')
-            return "200 ECHO: POST\n"
+            return "200"
         else:
-            return "415 Unsupported Media Type ;)"
+            return "415 Unsupported Media Type"
     elif request.method == 'DELETE':
             globals()['sitedf'] = init_sitedf()
-            return "ECHO: DELETE"
+            return "200"
 
+@app.route('/api/sites/snmp_details',methods = ['GET', 'POST','DELETE'])
+def api_sites():
+    if request.method == 'GET':
+        js = globals()['sites_snmp'].to_json(orient='index')
+        resp = Response(js, status=200, mimetype='application/json')
+        resp.headers['Link'] = '/api/sites/snmp_details'
+        return resp
+    elif request.method == 'POST':
+        if request.content_type == 'application/json':
+            globals()['sites_snmp'] = pd.read_json(request.get_json(), orient='index')
+            return "200\n"
+        else:
+            return "415 Unsupported Media Type"
+    elif request.method == 'DELETE':
+            globals()['sites_snmp'] = init_sitedf()
+            return "200"
 
 @app.route('/api/nodes',methods = ['GET', 'POST','DELETE'])
 def api_nodes():
@@ -42,12 +58,12 @@ def api_nodes():
     elif request.method == 'POST':
         if request.content_type == 'application/json':
             globals()['nodedf'] = pd.read_json(request.get_json(), orient='index')
-            return "200 ECHO: POST\n"
+            return "200"
         else:
-            return "415 Unsupported Media Type ;)"
+            return "415 Unsupported Media Type "
     elif request.method == 'DELETE':
             globals()['nodedf'] = init_nodedf()
-            return "ECHO: DELETE"
+            return "200"
 
 @app.route('/api/eventlogs',methods = ['GET', 'POST','DELETE'])
 def api_eventlogs():
@@ -59,12 +75,12 @@ def api_eventlogs():
     elif request.method == 'POST':
         if request.content_type == 'application/json':
             globals()['eventdf'] = pd.read_json(request.get_json(), orient='index')
-            return "200 ECHO: POST\n"
+            return "200"
         else:
-            return "415 Unsupported Media Type ;)"
+            return "415 Unsupported Media Type"
     elif request.method == 'DELETE':
             globals()['nodedf'] = init_eventdf()
-            return "ECHO: DELETE"
+            return "200"
 
 if __name__ == '__main__':
 
