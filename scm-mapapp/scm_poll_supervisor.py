@@ -43,6 +43,7 @@ if __name__ == "__main__":
 
         gen_sites_snmp(sites_snmpdf,uplinkdf) 
         post_sites_snmp(proxy, sites_snmpdf)
+        print(sitesdf, sites_snmpdf)
 
         try:    
             r = rq.post(proxy+'/api/sites', json=sitedf.to_json(orient='index'))
