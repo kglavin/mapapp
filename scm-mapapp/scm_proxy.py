@@ -1,4 +1,4 @@
-from scm_api import sitedf, nodedf, eventdf, sites_snmpdf, init_sitedf, init_nodedf, init_eventdf,init_sites_snmp
+from scm_api import sitedf, nodedf, eventdf, sites_snmpdf,uplinkdf,  init_sitedf, init_nodedf, init_eventdf,init_sites_snmp, init_uplinkdf
 from flask import Flask, url_for
 from flask import request, Response
 import pandas as pd
