@@ -3,7 +3,7 @@ import multiprocessing as mp
 import netrc 
 import time
 import requests as rq
-from scm_api import init_sitedf, sitedf, init_nodedf, nodedf, init_eventdf, eventdf,uplinkdf, init_uplinkdf, init_sites_snmp, sites_snmpdf, get_sites, get_nodes, get_eventlogs, gen_sites_snmp, post_sites_snmp
+from scm_api import init_sitedf, sitedf, init_nodedf, nodedf, init_eventdf, eventdf,uplinkdf, init_uplinkdf, init_sites_snmp, sites_snmpdf, get_sites, get_nodes, get_eventlogs, get_uplinks, gen_sites_snmp, post_sites_snmp
 
 
 if __name__ == "__main__":
@@ -37,11 +37,11 @@ if __name__ == "__main__":
             #TODO Change to Multiprocessing version later
             get_sites(sitedf, realm, user, pw, region)
             get_nodes(nodedf, sitedf, realm, user, pw,region)
+            get_uplinks(uplinkdf, sitedf, realm, user, pw, region):
             get_eventlogs(eventdf,realm,user,pw,region)
             region += 1
 
         gen_sites_snmp(sites_snmpdf,uplinkdf) 
-        print(sites_snmpdf)  
         post_sites_snmp(proxy, sites_snmpdf)
 
         try:    
