@@ -106,6 +106,7 @@ def get_uplinks_proxy(proxy,user="",pw=""):
 def gen_sites_snmp(sites_snmpdf,uplinkdf):
     a = uplinkdf[uplinkdf['wan'].str.contains('wan-Internet')].dropna()
     for i, row in a.iterrows():
+        print(row)
         sites_snmpdf.loc[i] = row
     return 
 
