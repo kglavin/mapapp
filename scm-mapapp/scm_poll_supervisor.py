@@ -38,7 +38,7 @@ if __name__ == "__main__":
             get_eventlogs(eventdf,realm,user,pw,region)
             region += 1
 
-        gen_sites_snmp(sites_snmpdf,uplinkdf):    
+        gen_sites_snmp(sites_snmpdf,uplinkdf)    
         try:
             post_sites(proxy, sites_snmpdf)
             r = rq.post(proxy+'/api/sites', json=sitedf.to_json(orient='index'))
