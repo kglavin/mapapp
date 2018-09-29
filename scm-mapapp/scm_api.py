@@ -125,6 +125,7 @@ def find_tunnel_relationships(sitedf,region=0):
     r = []
     if len(sitedf) < 1:
         return r
+    print(sitedf)
     for s in sitedf.index:
         if region == 0:
             if len(sitedf.loc[s]['leafs']) > 0 :
