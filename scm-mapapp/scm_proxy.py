@@ -1,4 +1,4 @@
-from scm_api import sitedf, nodedf, eventdf, init_sitedf, init_nodedf, init_eventdf
+from scm_api import sitedf, nodedf, eventdf, sites_snmpdf, init_sitedf, init_nodedf, init_eventdf,init_sites_snmp,
 from flask import Flask, url_for
 from flask import request, Response
 import pandas as pd
@@ -9,6 +9,7 @@ app = Flask(__name__)
 globals()['sitedf'] = init_sitedf()
 globals()['nodedf'] = init_nodedf()
 globals()['eventdf'] = init_eventdf()
+globals()['sites_snmpdf'] = init_sites_snmp()
 
 @app.route('/')
 def api_root():
@@ -34,18 +35,18 @@ def api_sites():
 @app.route('/api/sites/snmp_details',methods = ['GET', 'POST','DELETE'])
 def api_sites():
     if request.method == 'GET':
-        js = globals()['sites_snmp'].to_json(orient='index')
-        resp = Response(js, status=200, mimetype='application/json')
+        s = globals()['sites_snmpdf'].to_json(orient='index')
+        resp = Response(s, status=200, mimetype='application/json')
         resp.headers['Link'] = '/api/sites/snmp_details'
         return resp
     elif request.method == 'POST':
         if request.content_type == 'application/json':
-            globals()['sites_snmp'] = pd.read_json(request.get_json(), orient='index')
+            globals()['sites_snmpdf'] = pd.read_json(request.get_json(), orient='index')
             return "200\n"
         else:
             return "415 Unsupported Media Type"
     elif request.method == 'DELETE':
-            globals()['sites_snmp'] = init_sitedf()
+            globals()['sites_snmpdf'] = init_sitedf()
             return "200"
 
 @app.route('/api/nodes',methods = ['GET', 'POST','DELETE'])

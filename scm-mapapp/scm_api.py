@@ -11,15 +11,21 @@ from math import sin, cos, atan2, sqrt, radians, degrees
 gpsdict = gps.gendict()
 
 def init_sitedf():
-    return pd.DataFrame([],  columns =  ['site', 'lat', 'lon','leafs','region'])
+    return pd.DataFrame([],  columns =  ['site', 'lat', 'lon','leafs','region', 'fm_state'])
+def init_sites_snmp():
+    return pd.DataFrame([],  columns =  ['site', 'v4ip', 'wan'])
 def init_nodedf():
     return pd.DataFrame([],  columns =  ['site','serial','router_id','region'])
+def init_uplinkdf():
+    return pd.DataFrame([],  columns =  ['site', 'v4ip', 'wan'])
 def init_eventdf():
     return pd.DataFrame([],  columns =  ['Time','utc', 'Message', 'Severity','region'])
 
-sitedf = init_sitedf()
-nodedf = init_nodedf()
-eventdf = init_eventdf()
+sitedf       = init_sitedf()
+sites_snmpdf = init_sites_snmp()
+nodedf       = init_nodedf()
+uplinkdf     = init_uplinkdf()
+eventdf      = init_eventdf()
 
 def get_sites(sitedf, realm, user, pw, region=0):
     r = scm.get('sites', realm, user,pw)
@@ -29,7 +35,7 @@ def get_sites(sitedf, realm, user, pw, region=0):
             p = gpsdict[a['city']]
             lat = p['lat']
             lon = p['lon']
-            sitedf.loc[a['id']] = [a['city'], lat, lon,a['sitelink_leafs'],region]
+            sitedf.loc[a['id']] = [a['city'].replace(" ","_"), lat, lon,a['sitelink_leafs'],region,0]
     return
 
 def get_sites_proxy(proxy,user="",pw=""):
@@ -40,16 +46,6 @@ def get_sites_proxy(proxy,user="",pw=""):
     else:
         return init_sitesdf()
 
-def get_sites_dict(site_dict, realm, user, pw, region=0):
-    r = scm.get('sites', realm, user,pw)
-    if r.status_code == 200:
-        f = r.json()
-        for a in f['items']:
-            p = gpsdict[a['city']]
-            lat = p['lat']
-            lon = p['lon']
-            site_dict[a['id']] = { 'site':a['city'], 'lat':lat, 'lon':lon, 'leafs': a['sitelink_leafs'],'region':region}
-    return
 
 def get_nodes(nodedf, sitedf, realm, user, pw, region=0):
     r = scm.get('nodes', realm, user,pw)
@@ -67,14 +63,6 @@ def get_nodes_proxy(proxy,user="",pw=""):
     else:
         return init_nodesdf()
 
-def get_nodes_dict(node_dict, site_dict, realm, user, pw, regions=0):
-    r = scm.get('nodes', realm, user,pw)
-    if r.status_code == 200:
-        f = r.json()
-        for a in f['items']:
-            city = site_dict[a['site']]['site']
-            node_dict[a['id']] = { 'site':city, 'serial':a['serial'], 'router_id':a['router_id'],'region':region}
-    return
 
 def get_eventlogs(eventdf,realm, user, pw, region=0):
     r = scm.get('eventlogs', realm, user,pw)
@@ -96,18 +84,41 @@ def get_eventlogs_proxy(proxy, user="",pw=""):
     else:
         return init_eventdf()
 
-def get_eventlogs_dict(event_dict,realm, user, pw, region=0):
-    r = scm.get('eventlogs', proxy, user,pw)
+
+def get_uplinks(uplinkdf, sitedf, realm, user, pw, region=0):
+    r = scm.get('uplinks_r', realm, user,pw)
     if r.status_code == 200:
         f = r.json()
         for a in f['items']:
-            event_dict[a['id']] = { 'time':datetime.datetime.fromtimestamp(a['utc']).strftime('%c'),
-                                    'utc':a['utc'],
-                                    'Message':a['msg'],
-                                    'Severity':a['severity'],
-                                    'region':region}
+            #print(a['id'], a['site'], a['v4ip'])
+            city = sitedf.loc[a['site']]['site']
+            uplinkdf.loc[a['id']] = [city, a['v4ip'], a['wan']] 
     return
 
+def get_uplinks_proxy(proxy,user="",pw=""):
+    r = rq.get( proxy + '/api/uplinks', auth=(user,pw))
+    if r.status_code == 200:
+        return pd.read_json(r.content, orient='index')
+    else:
+        return init_uplinksdf()
+
+
+def gen_sites_snmp(sites_snmpdf,uplinkdf):
+    a = uplinkdf[uplinkdf['wan'].str.contains('wan-Internet')].dropna()
+    for i, row in a.iterrows():
+        sites_snmpdf.loc[i] = row
+    return 
+
+def post_sites(proxy, sites_snmpdf):
+    r = rq.post(proxy+'/api/sites/snmp_details', json=sites_snmpdf.to_json(orient='index'))
+    return
+
+def get_sites_proxy(proxy,user="",pw=""):
+    r = rq.get( proxy + '/api/sites/snmp_details', auth=(user,pw))
+    if r.status_code == 200:
+        return pd.read_json(r.content, orient='index')
+    else:
+        return init_sites_snmpdf()
 
 def find_tunnel_relationships(sitedf,region=0):
     ll = []
@@ -132,13 +143,13 @@ def find_tunnel_relationships(sitedf,region=0):
     return r
 
 
-def scattermapbox_line(a_lat, a_lon, z_lat, z_lon):
+def scattermapbox_line(a_lat, a_lon, z_lat, z_lon, color='rgb(255, 0, 0)'):
     return { 
             'lat': [a_lat, z_lat ],
             'lon': [a_lon , z_lon ],
             'type': 'scattermapbox',
             'mode':'lines',
-            'line':{ 'size':1, 'color': 'rgb(255, 0, 0)' },
+            'line':{ 'size':1, 'color': color },
             }
 
 def generate_tunnels(sitedf, region=0):

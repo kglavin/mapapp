@@ -19,6 +19,7 @@ def get(item, realm, user,pw):
         'path_rules':'/api/scm.config/1.0/path_rules',
         'status':'/api/scm.config/1.0.status',
         'eventlogs':'/api/scm.reporting/1.0/event_logs',
+        'uplinks_r':'/api/scm.reporting/1.0/uplinks',
     }
 
     which_item = choices.get(item, 'status')
