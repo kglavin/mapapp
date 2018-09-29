@@ -47,7 +47,7 @@ def api_snmp_details():
         else:
             return "415 Unsupported Media Type"
     elif request.method == 'DELETE':
-            globals()['sites_snmpdf'] = init_sitedf()
+            globals()['sites_snmpdf'] = init_sites_snmp()
             return "200"
 
 @app.route('/api/nodes',methods = ['GET', 'POST','DELETE'])
