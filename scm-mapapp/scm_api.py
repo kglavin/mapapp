@@ -105,17 +105,15 @@ def get_uplinks_proxy(proxy,user="",pw=""):
 
 def gen_sites_snmp(sites_snmpdf,uplinkdf):
     a = uplinkdf[uplinkdf['wan'].str.contains('wan-Internet')].dropna()
-    print ("in get_sites_snmp a=", uplinkdf)
     for i, row in a.iterrows():
         sites_snmpdf.loc[i] = row
-    print('sites_snmpdf =', sites_snmpdf)
     return 
 
 def post_sites_snmp(proxy, sites_snmpdf):
     r = rq.post(proxy+'/api/snmp_details', json=sites_snmpdf.to_json(orient='index'))
     return
 
-def get_sites_proxy(proxy,user="",pw=""):
+def get_sites_snmp_proxy(proxy,user="",pw=""):
     r = rq.get( proxy + '/api/snmp_details', auth=(user,pw))
     if r.status_code == 200:
         return pd.read_json(r.content, orient='index')
@@ -127,7 +125,6 @@ def find_tunnel_relationships(sitedf,region=0):
     r = []
     if len(sitedf) < 1:
         return r
-    print(sitedf)
     for s in sitedf.index:
         if region == 0:
             if len(sitedf.loc[s]['leafs']) > 0 :
