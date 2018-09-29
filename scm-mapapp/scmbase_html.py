@@ -1,4 +1,7 @@
-
+#
+# routines to generate basic html structures for use in the application, 
+# standard header and footer. 
+#
 import dash
 import dash_core_components as dcc
 import dash_html_components as html

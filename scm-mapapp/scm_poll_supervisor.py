@@ -1,4 +1,10 @@
-
+#
+# a daemon that periocially polls the SCM realms via rest api, 
+# this data is then stored in the proxy cache for use by other 
+# subsytems
+# 
+# currently hard coded to poll every 10 minutes.  
+#
 import multiprocessing as mp
 import netrc 
 import time

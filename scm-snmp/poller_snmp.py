@@ -1,3 +1,10 @@
+#
+# routines to poll snmp information from the appliances 
+# using the easysnmp library. 
+# 
+# bulk polled data is placed in a pivoted Pandas dataframe to allow it to be easily entered in a 
+# time series database on a per site/interface basis. 
+
 from easysnmp import Session
 import netrc 
 import pprint

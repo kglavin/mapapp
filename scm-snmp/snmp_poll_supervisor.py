@@ -1,3 +1,22 @@
+#
+# daemon that polls standard SNMP information from a set of provided 
+# appliances/sites
+# netrc is used to store the community string, currently the same string is 
+# used for all instnaces 
+#
+# bulk received data is sent to the timeseries data to be stored. 
+# currently period of SNMP queries is set to 15 seconds 
+#
+# This implementation uses a multi process implemntation so there are 
+# multiple slave instances that undertake the snmp polling so that 
+# this polling can be happening in parallel to a set of sites instead
+# of sequentially polling each unique site/appliance
+# the results of a single cycle of polling is sent as a batch to the 
+# time series database by the master process, it is expected that the 
+# polling nodes are close to the time series node so there is more latency 
+# between polling and appliance versus master poll node and time series database, 
+# so batch insert should be fast across a high speed low latency connection. 
+
 from easysnmp import Session
 import multiprocessing as mp
 import netrc 

@@ -1,3 +1,9 @@
+#
+# dash/flask based dashboard to present data that is derived from a set of SCM instances via rest
+# interfaces 
+# or from SNMP data polled from the appliances associated with those SCM instances
+# 
+
 import os
 import datetime
 import time
@@ -16,6 +22,10 @@ app = dash.Dash(__name__)
 # needed to keep dash happy about complex dependancies with multi-page app.
 app.config.supress_callback_exceptions = True
 
+
+###
+# Traffic Page -- this allows for interface and tunnel data to be presented in graphical format
+###
 def traffic_dropdowns(sitedf):
     sites = sitedf['site'].tolist()
     interfaces = [ 0,1,2,3,4]
@@ -50,6 +60,10 @@ def traffic_html(sitedf):
                                 dcc.Graph(id='if-stats-graph')],
                     className="twelve columns")
 
+###    
+# Event page -- provides a table view of the event log that is polled from 
+# the SCM instances 
+###
 def generate_table(dataframe, max_rows=10):
     return html.Table(
         # Header
@@ -67,7 +81,13 @@ def event_html():
                 generate_table(eventdf,500),]
             )
 
-
+###
+# MAP page -- displays a map with an overlay of the site locations 
+# and the interconnectivity between sites 
+# filtering and scoping via dropdown is provided 
+# all sites or regional views, currently the sites for each individual SCM 
+# instance are each assigned to a unique region
+###
 def map_dropdowns(regions):
     opts = [ {'label':'All Sites', 'value': 0} ]
     opts.extend([{'label': 'Region '+str(i), 'value': i} for i in regions])
@@ -86,6 +106,9 @@ def map_html(regions):
                 className="twelve columns"
            )
 
+###
+# Top Level page -- navigation buttons to the other main pages 
+###
 def scm_buttons():
     b1 = dcc.Link(html.Button('home',    id='home_page'),    href='/')
     b2 = dcc.Link(html.Button('map',     id='map_page'),     href='/map_page')
@@ -106,6 +129,9 @@ def scm_layout():
 
 app.layout = scm_layout()
 
+#
+# update the map page based on the map criteria being refreshed ( changing or reslecting a site scope)
+#
 @app.callback(dash.dependencies.Output('sites-map', 'figure'),
               [dash.dependencies.Input('map-refresh', 'value')])
 def gen_map(region):
@@ -161,6 +187,10 @@ def gen_map(region):
     } 
     return figure
 
+#
+# graph statistics material is queried and formatted into appropriate 
+# format when the filter/scope drop downs are manipulated
+#
 
 def gen_if_stats_data(site,tun,eth,duration,packets):
     qd = {'id':site, 'if_name':str(tun)+str(eth), 'period':duration}
@@ -207,6 +237,10 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
             figure = {}
         return figure
 
+#
+# Render the correct top level page based on the url that is requested or 
+# caused by a refresh/filter/button action
+#
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
 def display_page(pathname):
@@ -239,16 +273,28 @@ if __name__ == '__main__':
     mapbox_access_token = "pk.eyJ1Ijoia2dsYXZpbiIsImEiOiJjamd6ZjgzZDkwZWJlMnFyNG1wN3ZlMXVwIn0.qygVV7-zi8IMX8wyxawEpA"
     #mapbox_access_token = os.environ.get('MAPBOX_ACCESS_TOKEN', 'mapbox-token')
 
+#
+# hardcoded list of SCM instances in this case a single realm is hosting three 
+# SCM instances but for scale setups 
+# it possible that there would be unique REALM instances for each SCM instance
+#
     realm = 'https://catfish3.riverbed.cc'
     hosts = ['kglavin-us', 'kglavin-eur', 'kglavin-asia' ]
     users = []
     pw=[]
     regions = []
+    # 
+    # a caching server into which an scm_polling backend is periodically posting data 
+    # received from the SCM instance via rest 
+    # 
     proxy = "http://127.0.0.1:8040"
 
-
+    # use the netrc machanism to retrieve from the user( on server) the .netrc based credentials to access 
+    # the scm instance. 
     netrc = netrc.netrc()
 
+    # region starts at 1 for SCM istances, region == 0 is used to indicate all regions in 
+    # the map filtering. 
     region = 1
     for host in hosts:
         authTokens = netrc.authenticators(host)
@@ -258,7 +304,8 @@ if __name__ == '__main__':
         regions.append(region)
         region += 1
 
-    
+    # get the cached information from the scm, the individual pages may refresh this information 
+    # on demand as pages are served. 
     sitedf = get_sites_proxy(proxy)
     nodedf = get_nodes_proxy(proxy)
     eventdf = get_eventlogs_proxy(proxy)

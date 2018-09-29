@@ -1,3 +1,9 @@
+#
+# Proxy cache that stores a set of data stuctures that are polled or derived from the SCM instnaces. 
+# 
+# subsytems may 'get' the data or 'post' the data for others to 'get'
+#
+
 from scm_api import sitedf, nodedf, eventdf, sites_snmpdf, uplinkdf,  init_sitedf, init_nodedf, init_eventdf,init_sites_snmp, init_uplinkdf
 from flask import Flask, url_for
 from flask import request, Response
@@ -15,6 +21,9 @@ globals()['sites_snmpdf'] = init_sites_snmp()
 def api_root():
     return 'proxy api for SCM data'
 
+#
+#  The site structures
+#
 @app.route('/api/sites',methods = ['GET', 'POST','DELETE'])
 def api_sites():
     if request.method == 'GET':
@@ -32,6 +41,9 @@ def api_sites():
             globals()['sitedf'] = init_sitedf()
             return "200"
 
+# 
+# The SNMP host details 
+# 
 @app.route('/api/snmp_details',methods = ['GET', 'POST','DELETE'])
 def api_snmp_details():
     if request.method == 'GET':
@@ -48,7 +60,9 @@ def api_snmp_details():
     elif request.method == 'DELETE':
             globals()['sites_snmpdf'] = init_sites_snmp()
             return "200"
-
+#
+#  Node details
+# 
 @app.route('/api/nodes',methods = ['GET', 'POST','DELETE'])
 def api_nodes():
     if request.method == 'GET':
@@ -65,7 +79,9 @@ def api_nodes():
     elif request.method == 'DELETE':
             globals()['nodedf'] = init_nodedf()
             return "200"
-
+#
+# the SCM event logs 
+#
 @app.route('/api/eventlogs',methods = ['GET', 'POST','DELETE'])
 def api_eventlogs():
     if request.method == 'GET':

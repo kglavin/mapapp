@@ -1,3 +1,13 @@
+
+#
+# basic implmentation of the SteelConnect Rest API implemented using the 
+# requests library and credentials that were retried from the netrc sub-system
+# in this implementaition realm that be the full URL including the SCM org designation 
+# or it can be just the realm portion, the results will be determinied by the RBAC 
+# capabilities of the user credentials ( a realm admin account will return results for 
+# for all orgs in that realm where as an org admin or read only will return just results 
+# for that org even if a realm url is used without the org details)
+#
 import requests as rq
 
 
@@ -21,7 +31,6 @@ def get(item, realm, user,pw):
         'eventlogs':'/api/scm.reporting/1.0/event_logs',
         'uplinks_r':'/api/scm.reporting/1.0/uplinks',
     }
-
     which_item = choices.get(item, 'status')
     r = rq.get(realm + which_item, auth=(user,pw))    
     return r
