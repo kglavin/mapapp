@@ -37,7 +37,7 @@ if __name__ == "__main__":
             #TODO Change to Multiprocessing version later
             get_sites(sitedf, realm, user, pw, region)
             get_nodes(nodedf, sitedf, realm, user, pw,region)
-            get_uplinks(uplinkdf, sitedf, realm, user, pw, region):
+            get_uplinks(uplinkdf, sitedf, realm, user, pw, region)
             get_eventlogs(eventdf,realm,user,pw,region)
             region += 1
 
