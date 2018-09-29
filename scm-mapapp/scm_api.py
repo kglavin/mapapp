@@ -110,11 +110,11 @@ def gen_sites_snmp(sites_snmpdf,uplinkdf):
     return 
 
 def post_sites_snmp(proxy, sites_snmpdf):
-    r = rq.post(proxy+'/api/sites/snmp_details', json=sites_snmpdf.to_json(orient='index'))
+    r = rq.post(proxy+'/api/snmp_details', json=sites_snmpdf.to_json(orient='index'))
     return
 
 def get_sites_proxy(proxy,user="",pw=""):
-    r = rq.get( proxy + '/api/sites/snmp_details', auth=(user,pw))
+    r = rq.get( proxy + '/api/snmp_details', auth=(user,pw))
     if r.status_code == 200:
         return pd.read_json(r.content, orient='index')
     else:

@@ -32,16 +32,17 @@ def api_sites():
             globals()['sitedf'] = init_sitedf()
             return "200"
 
-@app.route('/api/sites/snmp_details',methods = ['GET', 'POST','DELETE'])
+@app.route('/api/snmp_details',methods = ['GET', 'POST','DELETE'])
 def api_snmp_details():
     if request.method == 'GET':
         s = globals()['sites_snmpdf'].to_json(orient='index')
         resp = Response(s, status=200, mimetype='application/json')
-        resp.headers['Link'] = '/api/sites/snmp_details'
+        resp.headers['Link'] = '/api/snmp_details'
         return resp
     elif request.method == 'POST':
         if request.content_type == 'application/json':
             globals()['sites_snmpdf'] = pd.read_json(request.get_json(), orient='index')
+            print(sites_snmpdf)
             return "200"
         else:
             return "415 Unsupported Media Type"
