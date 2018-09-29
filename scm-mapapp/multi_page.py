@@ -46,7 +46,7 @@ def traffic_dropdowns(sitedf):
     return [ d1,d2,d3,d4,d5]
 
 def traffic_html(sitedf):
-    return html.Div(children = [ html.Div( children = traffic_dropdowns(sitedf),className='row'),
+    return html.Div(children = [ html.Div( children=traffic_dropdowns(sitedf),className='row'),
                                 dcc.Graph(id='if-stats-graph')],
                     className="twelve columns")
 
@@ -80,7 +80,7 @@ def map_dropdowns(regions):
 
 def map_html(regions):
     return html.Div( children = [  
-                html.Div( children = map_dropdowns(regions), classname='row'),
+                html.Div( children=map_dropdowns(regions), className='row'),
                 dcc.Graph(id='sites-map')
                 ],
                 className="twelve columns"
