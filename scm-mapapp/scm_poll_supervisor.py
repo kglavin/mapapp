@@ -3,7 +3,7 @@ import multiprocessing as mp
 import netrc 
 import time
 import requests as rq
-from scm_api import init_sitedf, sitedf, init_nodedf, nodedf, init_eventdf, eventdf,uplinkdf, init_uplinkdf, init_sites_snmp, sites_snmpdf, get_sites, get_nodes, get_eventlogs, gen_sites_snmp
+from scm_api import init_sitedf, sitedf, init_nodedf, nodedf, init_eventdf, eventdf,uplinkdf, init_uplinkdf, init_sites_snmp, sites_snmpdf, get_sites, get_nodes, get_eventlogs, gen_sites_snmp, post_sites_snmp
 
 
 if __name__ == "__main__":
@@ -41,7 +41,7 @@ if __name__ == "__main__":
             region += 1
 
         gen_sites_snmp(sites_snmpdf,uplinkdf)   
-        post_sites(proxy, sites_snmpdf)
+        post_sites_snmp(proxy, sites_snmpdf)
 
         try:    
             r = rq.post(proxy+'/api/sites', json=sitedf.to_json(orient='index'))
