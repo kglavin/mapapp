@@ -41,8 +41,10 @@ def api_snmp_details():
         return resp
     elif request.method == 'POST':
         if request.content_type == 'application/json':
+            print(request.get_json())
             globals()['sites_snmpdf'] = pd.read_json(request.get_json(), orient='index')
-            return "200\n"
+            print(globals()['sites_snmpdf'])
+            return "200"
         else:
             return "415 Unsupported Media Type"
     elif request.method == 'DELETE':
