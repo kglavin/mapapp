@@ -50,7 +50,7 @@ def get_sites(sitedf, realm, user, pw, region=0):
     if r.status_code == 200:
         f = r.json()
         for a in f['items']:
-            try
+            try:
                 p = gpsdict[a['city']]
             except:
                 #unknown cites will be stacked at (0,0) on the map as the gps data is not extensive
