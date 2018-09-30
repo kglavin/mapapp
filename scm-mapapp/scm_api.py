@@ -125,7 +125,7 @@ def get_eventlogs_proxy(proxy, user="",pw=""):
 
 
 def get_uplinks(uplinkdf, sitedf, realm, user, pw, region=0):
-     ''' populate the provided pandas dataframe with the uplink information, 
+    ''' populate the provided pandas dataframe with the uplink information, 
         as this data is entered into the dataframe each row is annotated with the region that 
         the node is assocated with, defaults to 0 region
         '''
