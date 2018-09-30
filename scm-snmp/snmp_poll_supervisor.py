@@ -89,7 +89,7 @@ if __name__ == "__main__":
             bad_measurement_writes = 0
             poll_time_measures = []
             new_sites = update_sites_dict()
-            if len(new_sites > 0):
+            if len(new_sites) > 0:
                 old_sites = sites
                 sites = new_sites
             else:
