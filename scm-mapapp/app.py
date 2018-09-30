@@ -198,7 +198,6 @@ def gen_if_stats_data(site,tun,eth,duration,packets):
 
     if data.size > 0:
         data['deltaT'] = data.index.to_series().diff().dt.total_seconds()
-        print(data['deltaT'])
         if packets in 'Octets':
             data['in'] = pd.to_numeric(data['in_octets'], errors='coerce').diff()/data['deltaT']
             data['out'] = pd.to_numeric(data['out_octets'], errors='coerce').diff()/data['deltaT']
