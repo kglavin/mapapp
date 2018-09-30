@@ -29,7 +29,7 @@ import logging
 
 def update_sites_dict(proxy='http://127.0.0.1:8040'):
     ret = {}
-    r = rq.get( proxy + '/api/snmp_details', auth=(user,pw))
+    r = rq.get( proxy + '/api/snmp_details', auth=("",""))
     if r.status_code == 200:
         df =  pd.read_json(r.content, orient='index')
         ret = dict(zip(df.site, df.v4ip))
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     bad_measurement_writes = 0
     poll_time_measures = []
 
-    sites_refresh_count = 0
+    sites_refresh_count = 20
     old_sites = {}
 
     logging.debug('starting main loop')
