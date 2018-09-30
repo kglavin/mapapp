@@ -17,6 +17,7 @@
 # between polling and appliance versus master poll node and time series database, 
 # so batch insert should be fast across a high speed low latency connection. 
 
+import os
 from easysnmp import Session
 import pandas as pd
 import requests as rq
@@ -39,7 +40,8 @@ if __name__ == "__main__":
     netrc = netrc.netrc()
     logger = logging.getLogger('scm-snmp-poll')
     logger.setLevel(logging.DEBUG)
-    fh = logging.FileHandler('scm-snmp-poll.log')
+    logfilename = 'scm-snmp-poll.'+str(os.getpid())+'.log'
+    fh = logging.FileHandler(logfilename)
     fh.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logger.addHandler(fh)
