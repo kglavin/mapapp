@@ -138,7 +138,7 @@ def get_uplinks(uplinkdf, sitedf, realm, user, pw, region=0):
     return
 
 def get_uplinks_proxy(proxy,user="",pw=""):
-       ''' get the uplinks data using the proxy instead of directly 
+    ''' get the uplinks data using the proxy instead of directly 
         returns a pandas data frame with the received data or empty on a problem
         '''
     r = rq.get( proxy + '/api/uplinks', auth=(user,pw))
