@@ -197,7 +197,7 @@ def gen_if_stats_data(site,tun,eth,duration,packets):
     data = query_scmdata("ifstats", query_data=qd)
 
     if data.size > 0:
-        df['deltaT'] = data.index.to_series().diff().dt.seconds.div(60, fill_value=30)
+        data['deltaT'] = data.index.to_series().diff().dt.seconds.div(60, fill_value=30)
         if packets in 'Octets':
             data['in'] = pd.to_numeric(data['in_octets'], errors='coerce').diff()/df['deltaT']
             data['out'] = pd.to_numeric(data['out_octets'], errors='coerce').diff()/df['deltaT']
