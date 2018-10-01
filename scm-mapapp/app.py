@@ -224,8 +224,7 @@ def gen_if_stats_data(site,tun,eth,duration,packets):
 def gen_if_stats_graphs(site,tun,eth,duration,packets):
         data=gen_if_stats_data(site,tun,eth,duration,packets)
         if len(data) > 0:
-            # two lines on the graph ( and in and an out)
-            print(data)
+            # four lines on the graph ( and in and an out) and rolling average
             figure={
                 'data': [{
                     'x': data.index,
