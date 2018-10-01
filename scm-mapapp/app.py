@@ -55,12 +55,12 @@ def traffic_dropdowns(sitedf):
                       className='three columns')
     b1  = dcc.Link(html.Button('Refresh',   id='graph_refresh', className='one column'))
 
-    i1 = dcc.Interval(
-                        id='interval-graph',
-                        interval=30000, # in milliseconds
-                        n_intervals=0)
+  #  i1 = dcc.Interval(
+  #                      id='interval-graph',
+  #                      interval=30000, # in milliseconds
+  #                      n_intervals=0)
 
-    return [ d1,d2,d3,d4,d5,i1]
+    return [ d1,d2,d3,d4,d5]
 
 def traffic_html(sitedf):
     return html.Div(children = [ html.Div( children=traffic_dropdowns(sitedf),className='row'),
@@ -218,6 +218,7 @@ def gen_if_stats_data(site,tun,eth,duration,packets):
     return data
 
 #dash.dependencies.Input('graph_refresh', 'value')
+#dash.dependencies.Input('interval-graph', 'n_intervals') 
 
 @app.callback(output=dash.dependencies.Output('if-stats-graph', 'figure'),
               inputs=[dash.dependencies.Input('if-stats-site', 'value'),
@@ -225,9 +226,9 @@ def gen_if_stats_data(site,tun,eth,duration,packets):
               dash.dependencies.Input('if-stats-eth', 'value'),
               dash.dependencies.Input('if-stats-duration', 'value'),
               dash.dependencies.Input('if-stats-packets', 'value'),
-              dash.dependencies.Input('interval-graph', 'n_intervals')              
+                           
               ])
-def gen_if_stats_graphs(site,tun,eth,duration,packets,n):
+def gen_if_stats_graphs(site,tun,eth,duration,packets):
         data=gen_if_stats_data(site,tun,eth,duration,packets)
         if len(data) > 0:
             # four lines on the graph ( and in and an out) and rolling average
