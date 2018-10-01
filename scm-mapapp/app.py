@@ -232,7 +232,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                     'y': data['in'],
                     'name': 'In '+packets,
                     'mode':'lines',
-                    'line'= {
+                    'line': {
                         'shape':'spline'
                         'width':2
                         },
@@ -243,7 +243,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                     'y': data['out'],
                     'name': 'Out '+packets,
                     'mode':'lines',
-                    'line'= {
+                    'line': {
                         'shape':'spline',
                         'width':2
                         },
@@ -254,7 +254,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                     'y': data['in_rolling'],
                     'name': 'RA In '+packets,
                     'mode':'lines',
-                    'line'= {
+                    'line': {
                         'shape':'spline',
                         'width':4
                         },
@@ -265,7 +265,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                     'y': data['out_rolling'],
                     'name': 'RA Out '+packets,
                     'mode':'lines',
-                    'line'= {
+                    'line':{
                         'shape':'spline',
                         'width':4
                         },
