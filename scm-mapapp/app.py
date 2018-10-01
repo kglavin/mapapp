@@ -224,6 +224,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets,refresh):
         data=gen_if_stats_data(site,tun,eth,duration,packets)
         if len(data) > 0:
             # two lines on the graph ( and in and an out)
+            print(data)
             figure={
                 'data': [{
                     'x': data.index,
@@ -252,7 +253,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets,refresh):
                     'name': 'RA Out '+packets,
                     'mode':'lines',
                     'marker': {'size': 2}
-                    },
+                    }
                     ]
             }
         else: 
