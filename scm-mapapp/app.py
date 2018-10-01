@@ -55,7 +55,12 @@ def traffic_dropdowns(sitedf):
                       className='three columns')
     b1  = dcc.Link(html.Button('Refresh',   id='graph_refresh', className='one column'))
 
-    return [ d1,d2,d3,d4,d5]
+    i1 = dcc.Interval(
+                        id='interval-graph',
+                        interval=30000, # in milliseconds
+                        n_intervals=0)
+
+    return [ d1,d2,d3,d4,d5,i1]
 
 def traffic_html(sitedf):
     return html.Div(children = [ html.Div( children=traffic_dropdowns(sitedf),className='row'),
@@ -219,9 +224,10 @@ def gen_if_stats_data(site,tun,eth,duration,packets):
               dash.dependencies.Input('if-stats-tun', 'value'),
               dash.dependencies.Input('if-stats-eth', 'value'),
               dash.dependencies.Input('if-stats-duration', 'value'),
-              dash.dependencies.Input('if-stats-packets', 'value')              
+              dash.dependencies.Input('if-stats-packets', 'value'),
+              dash.dependencies.Input('interval-graph', 'n_intervals')              
               ])
-def gen_if_stats_graphs(site,tun,eth,duration,packets):
+def gen_if_stats_graphs(site,tun,eth,duration,packets,n):
         data=gen_if_stats_data(site,tun,eth,duration,packets)
         if len(data) > 0:
             # four lines on the graph ( and in and an out) and rolling average
@@ -229,7 +235,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                 'data': [{
                     'x': data.index,
                     'y': data['in'],
-                    'name': 'In '+packets,
+                    'name': 'In '+packets +'/s',
                     'mode':'lines',
                     'line': {
                         'shape':'linear',
@@ -240,7 +246,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                     {
                     'x': data.index,
                     'y': data['out'],
-                    'name': 'Out '+packets,
+                    'name': 'Out '+packets+'/s',
                     'mode':'lines',
                     'line': {
                         'shape':'linear',
@@ -251,7 +257,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                     {
                     'x': data.index,
                     'y': data['in_rolling'],
-                    'name': 'RA In '+packets,
+                    'name': 'RA In '+packets+'/s',
                     'mode':'lines',
                     'line': {
                         'shape':'spline',
@@ -262,7 +268,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                     {
                     'x': data.index,
                     'y': data['out_rolling'],
-                    'name': 'RA Out '+packets,
+                    'name': 'RA Out '+packets+'/s',
                     'mode':'lines',
                     'line':{
                         'shape':'spline',
