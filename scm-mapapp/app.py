@@ -233,7 +233,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                     'name': 'In '+packets,
                     'mode':'lines',
                     'line': {
-                        'shape':'spline'
+                        'shape':'spline',
                         'width':2
                         },
                     'marker': {'size': 2}
