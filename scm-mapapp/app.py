@@ -233,8 +233,8 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                     'name': 'In '+packets,
                     'mode':'lines',
                     'line': {
-                        'shape':'spline',
-                        'width':2
+                        'shape':'linear',
+                        'width':1
                         },
                     'marker': {'size': 2}
                     },
@@ -244,8 +244,8 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                     'name': 'Out '+packets,
                     'mode':'lines',
                     'line': {
-                        'shape':'spline',
-                        'width':2
+                        'shape':'linear',
+                        'width':1
                         },
                     'marker': {'size': 2}
                     },
@@ -256,7 +256,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                     'mode':'lines',
                     'line': {
                         'shape':'spline',
-                        'width':4
+                        'width':2
                         },
                     'marker': {'size': 4}
                     },
@@ -267,7 +267,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                     'mode':'lines',
                     'line':{
                         'shape':'spline',
-                        'width':4
+                        'width':2
                         },
                     'marker': {'size': 4}
                     }
