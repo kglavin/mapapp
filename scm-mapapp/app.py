@@ -246,14 +246,14 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                     'y': data['in_rolling'],
                     'name': 'RA In '+packets,
                     'mode':'lines',
-                    'marker': {'size': 2}
+                    'marker': {'size': 4}
                     },
                     {
                     'x': data.index,
                     'y': data['out_rolling'],
                     'name': 'RA Out '+packets,
                     'mode':'lines',
-                    'marker': {'size': 2}
+                    'marker': {'size': 4}
                     }
                     ]
             }
