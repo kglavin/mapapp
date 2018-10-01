@@ -218,7 +218,7 @@ def gen_if_stats_data(site,tun,eth,duration,packets):
               dash.dependencies.Input('if-stats-eth', 'value'),
               dash.dependencies.Input('if-stats-duration', 'value'),
               dash.dependencies.Input('if-stats-packets', 'value'),
-              [dash.dependencies.Input('graph-refresh', 'value')
+              dash.dependencies.Input('graph-refresh', 'value')
               ])
 def gen_if_stats_graphs(site,tun,eth,duration,packets,refresh):
         data=gen_if_stats_data(site,tun,eth,duration,packets)
