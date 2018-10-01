@@ -203,9 +203,13 @@ def gen_if_stats_data(site,tun,eth,duration,packets):
         if packets in 'Octets':
             data['in'] = pd.to_numeric(data['in_octets'], errors='coerce').diff()/data['deltaT']
             data['out'] = pd.to_numeric(data['out_octets'], errors='coerce').diff()/data['deltaT']
+            data['in_rolling']= data['in'].rolling(5).mean()
+            data['out_rolling']= data['out'].rolling(5).mean()
         else:
             data['in'] = pd.to_numeric(data['in_unicast'], errors='coerce').diff()/data['deltaT']
             data['out'] = pd.to_numeric(data['out_unicast'], errors='coerce').diff()/data['deltaT']
+            data['in_rolling']= data['in'].rolling(5).mean()
+            data['out_rolling']= data['out'].rolling(5).mean()
     return data
 
 @app.callback(output=dash.dependencies.Output('if-stats-graph', 'figure'),
@@ -232,6 +236,20 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets,refresh):
                     'x': data.index,
                     'y': data['out'],
                     'name': 'Out '+packets,
+                    'mode':'lines',
+                    'marker': {'size': 2}
+                    },
+                    {
+                    'x': data.index,
+                    'y': data['in_rolling'],
+                    'name': 'RA In '+packets,
+                    'mode':'lines',
+                    'marker': {'size': 2}
+                    },
+                    {
+                    'x': data.index,
+                    'y': data['out_rolling'],
+                    'name': 'RA Out '+packets,
                     'mode':'lines',
                     'marker': {'size': 2}
                     },
