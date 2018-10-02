@@ -34,7 +34,7 @@ def update_sites_dict(proxy='http://127.0.0.1:8040'):
     r = rq.get( proxy + '/api/snmp_details', auth=("",""))
     if r.status_code == 200:
         df =  pd.read_json(r.content, orient='index')
-        ret = dict(zip(df.site, df.v4ip))
+        ret = dict(zip(df['site'], df['v4ip']))
     return ret
 
 def write_sites_status(site_status_list, proxy='http://127.0.0.1:8040'):
@@ -133,7 +133,7 @@ if __name__ == "__main__":
             except:
                 bad_measurement_writes +=1
                 logging.debug('failed to write_points')
-                
+                pass
             # send the status list to the api server so it can be used for realtime status of the nodes. 
             # can add link status later on. 
             #TODO
@@ -141,7 +141,7 @@ if __name__ == "__main__":
                 write_sites_status(status)
             except:
                 logging.debug('failed to write_sites_status')
-                
+                pass
         now_time = time.time()
         poll_time = now_time-start_poll_time
         if int(poll_time) < 15:
