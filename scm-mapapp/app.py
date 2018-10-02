@@ -151,7 +151,7 @@ def gen_map(region):
     for li in site_state_list:
         if li['id'] is not 'Dead':
             #sitedf.loc[li['site']]['fm_state'] = { 'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)' }
-            print (li['site'], 'Green', sitedf.loc[li['site']])
+            print (li['site'], 'Green', sitedf.loc[li['site']]['fm_state'])
         else:
             print (li['site'], 'Red')
             #sitedf.loc[li['site']]['fm_state'] = { 'size':10, 'color': 'rgb(255, 0, 0)' }
