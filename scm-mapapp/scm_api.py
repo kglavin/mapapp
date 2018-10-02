@@ -16,6 +16,7 @@ import requests as rq
 import scm as scm
 import gpslocation as gps
 from math import sin, cos, atan2, sqrt, radians, degrees
+import json
 
 
 gpsdict = gps.gendict()
@@ -172,6 +173,14 @@ def get_sites_snmp_proxy(proxy,user="",pw=""):
         return pd.read_json(r.content, orient='index')
     else:
         return init_sites_snmpdf()
+
+def get_sites_state_proxy(proxy,user="",pw=""):
+    ''' get the snmp site state information (if.location) from the proxy cache'''
+    r = rq.get(proxy + '/api/sites_state', auth=(user,pw))
+    if r.status_code == 200:
+        return json.loads(r.content)
+    else:
+        return {}
 
 def find_tunnel_relationships(sitedf,region=0):
     ''' using the site data frame, derive the tunnel relationships 

@@ -14,7 +14,7 @@ from dash.dependencies import Input, Output, State
 import pandas as pd
 import netrc
 import scm as scm
-from scm_api import sitedf, nodedf, eventdf, get_sites_proxy, get_nodes_proxy, get_eventlogs_proxy, generate_tunnels, generate_sites,find_tunnel_relationships,latlon_midpoint
+from scm_api import sitedf, nodedf, eventdf, get_sites_proxy, get_nodes_proxy, get_eventlogs_proxy, generate_tunnels, generate_sites,find_tunnel_relationships,latlon_midpoint, get_sites_state_proxy
 from scmbase_html import heading_html, footer_html
 from interface_graphing import query_scmdata
 
@@ -145,6 +145,7 @@ def gen_map(region):
     ## for each map update hit the local proxy to get the most recently polled sitesdf
     # this may still be stale data on the proxy but its responsive data. 
     sitedf = get_sites_proxy(globals()['proxy'])
+    print(get_sites_state_proxy(globals()['proxy']))
     tun_list = generate_tunnels(sitedf,region)
     tun_list.append(generate_sites(sitedf, region))
     #based on the generated site list we should change the center of focus 
