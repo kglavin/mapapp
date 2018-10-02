@@ -254,7 +254,7 @@ def generate_sites(sitedf, region=0):
             'lon': sitedf['lon'],
             'type': 'scattermapbox',
             'mode':'markers',
-            'marker':{ 'size':10, 'color': 'rgb(0, 225, 0)' },
+            'marker': sitedf['fm_state'],
             'text': sitedf['site']
         }
     else:
@@ -263,7 +263,7 @@ def generate_sites(sitedf, region=0):
             'lon': sitedf.loc[sitedf['region'] == region]['lon'],
             'type': 'scattermapbox',
             'mode':'markers',
-            'marker':{ 'size':10, 'color': 'rgb(0, 225, 0)' },
+            'marker': sitedf.loc[sitedf['region'] == region]['fm_state'],
             'text': sitedf['site']
         }
     return l
