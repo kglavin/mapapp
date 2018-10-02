@@ -165,7 +165,6 @@ def post_sites_snmp(proxy, sites_snmpdf):
     r = rq.post(proxy+'/api/snmp_details', json=sites_snmpdf.to_json(orient='index'))
     return
 
-
 def get_sites_snmp_proxy(proxy,user="",pw=""):
     ''' get the snmp site information from the proxy cache'''
     r = rq.get( proxy + '/api/snmp_details', auth=(user,pw))

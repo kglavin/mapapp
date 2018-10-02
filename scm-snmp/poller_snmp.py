@@ -154,6 +154,7 @@ def pivot_sitedata(sd,if_type='eth'):
       the associated measured values,   these measurements are returned as a list of measurement dictionaries
       '''
   ret = []
+  
   if if_type not in ['eth','vti']:
       return ret
   if sd['location'] == 'Dead':

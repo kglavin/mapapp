@@ -137,7 +137,6 @@ if __name__ == "__main__":
                 pass
             # send the status list to the api server so it can be used for realtime status of the nodes. 
             # can add link status later on. 
-            #TODO
             try:
                 write_sites_status(status)
             except:

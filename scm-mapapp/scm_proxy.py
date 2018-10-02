@@ -62,7 +62,6 @@ def api_snmp_details():
             globals()['sites_snmpdf'] = init_sites_snmp()
             return "200"
 
-
 # 
 # The site status details 
 # 
