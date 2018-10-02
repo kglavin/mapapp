@@ -144,17 +144,17 @@ app.layout = scm_layout()
 def gen_map(region):
     ## for each map update hit the local proxy to get the most recently polled sitesdf
     # this may still be stale data on the proxy but its responsive data. 
-    df = get_sites_proxy(globals()['proxy']).copy()
+    df = get_sites_proxy(globals()['proxy'])
+    # get rid of dataframe copying/slicing warning as this df is only alive for this function lifetime
+    df.is_copy = False
+
     site_state_list = get_sites_state_proxy(globals()['proxy'])
     # calculate the correct fm state (color for the states based on the sites_state values
     #print(type(site_state_list),site_state_list)
     for li in site_state_list:
         if li['id'] is not 'Dead':
             df.loc[li['site']]['fm_state'] = { 'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)' }
-            #print (li['site'], 'Green') 
-            #sitedf.loc[li['site']]['fm_state'] = 1
         else:
-            #print (li['site'], 'Red')
             df.loc[li['site']]['fm_state'] = { 'size':10, 'color': 'rgb(255, 0, 0)' }
     tun_list = generate_tunnels(df,region)
     tun_list.append(generate_sites(df, region))
