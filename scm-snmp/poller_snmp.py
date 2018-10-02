@@ -79,7 +79,7 @@ def poll_site(site, hostname, community='public'):
       data['location'] = 'Dead'
       raise
 
-  if data['Location'] is not 'Dead':
+  if data['location'] is not 'Dead':
     try:
       data['numinterfaces'] = get_num_interfaces(session)
       data['eth_index'], data['eth_name'], data['vti_index'], data['vti_name'] =  get_if_ids(session)
