@@ -147,7 +147,7 @@ def gen_map(region):
     sitedf = get_sites_proxy(globals()['proxy'])
     site_state_list = get_sites_state_proxy(globals()['proxy'])
     # calculate the correct fm state (color for the states based on the sites_state values
-    print(type(site_state_dict),site_state_dict)
+    print(type(site_state_list),site_state_list)
     for li in site_state_list:
         if li['id'] is not 'Dead':
             sitedf.loc[li['site']]['fm_state'] = { 'size':10, 'color': 'rgb(0, 255, 0)' }
