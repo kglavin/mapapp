@@ -34,7 +34,8 @@ def update_sites_dict(proxy='http://127.0.0.1:8040'):
     r = rq.get( proxy + '/api/snmp_details', auth=("",""))
     if r.status_code == 200:
         df =  pd.read_json(r.content, orient='index')
-        ret = dict(zip(df['site'], df['v4ip']))
+        for i in df.index:
+            ret[df.loc[i]['site']] =  df.loc[i]['v4ip']
     return ret
 
 def write_sites_status(site_status_list, proxy='http://127.0.0.1:8040'):
