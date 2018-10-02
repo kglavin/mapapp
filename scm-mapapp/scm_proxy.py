@@ -67,9 +67,9 @@ def api_snmp_details():
 # The site status details 
 # 
 @app.route('/api/sites_state',methods = ['GET', 'POST','DELETE'])
-def api_snmp_details():
+def api_sites_state():
     if request.method == 'GET':
-        s = globals()['sites_stats']
+        s = globals()['sites_state']
         resp = Response(s, status=200, mimetype='application/json')
         resp.headers['Link'] = '/api/sites_state'
         return resp
