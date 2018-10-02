@@ -133,15 +133,15 @@ if __name__ == "__main__":
             except:
                 bad_measurement_writes +=1
                 logging.debug('failed to write_points')
-                pass
+                
             # send the status list to the api server so it can be used for realtime status of the nodes. 
             # can add link status later on. 
             #TODO
             try:
                 write_sites_status(status)
-            except
+            except:
                 logging.debug('failed to write_sites_status')
-            pass
+                
         now_time = time.time()
         poll_time = now_time-start_poll_time
         if int(poll_time) < 15:
