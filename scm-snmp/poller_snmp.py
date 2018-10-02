@@ -76,8 +76,8 @@ def poll_site(site, hostname, community='public'):
       data['location'] = session.get('sysLocation.0').value
   except:
       print(e)
-          data['Location'] = 'Dead'
-          raise
+      data['Location'] = 'Dead'
+      raise
 
   if data['Location'] is not 'Dead':
     try:
