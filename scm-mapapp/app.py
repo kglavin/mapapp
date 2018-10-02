@@ -151,9 +151,9 @@ def gen_map(region):
     #print(type(site_state_list),site_state_list) 'site', 'lat', 'lon','leafs','region', 'fm_state'])
     for li in site_state_list:
         if li['id'] is not 'Dead':
-            df.loc[li['site']['fm_state'] = {'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)'}
+            df.loc[li['site']]['fm_state'] = {'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)'}
         else:
-            df.ix[li['site']['fm_state'] = { 'size':10, 'color': 'rgb(255, 0, 0)' }
+            df.loc[li['site']]['fm_state'] = { 'size':10, 'color': 'rgb(255, 0, 0)' }
 
     tun_list = generate_tunnels(df,region)
     tun_list.append(generate_sites(df, region))
