@@ -150,7 +150,7 @@ def gen_map(region):
     print(type(site_state_list),site_state_list)
     for li in site_state_list:
         if li['id'] is not 'Dead':
-            sitedf.loc[li['site']]['fm_state'] = { 'size':10, 'color': 'rgb(0, 255, 0)' }
+            sitedf.loc[li['site']]['fm_state'] = { 'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)' }
         else:
             sitedf.loc[li['site']]['fm_state'] = { 'size':10, 'color': 'rgb(255, 0, 0)' }
     tun_list = generate_tunnels(sitedf,region)
