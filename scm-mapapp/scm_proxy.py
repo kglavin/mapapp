@@ -75,7 +75,7 @@ def api_sites_state():
         return resp
     elif request.method == 'POST':
         if request.content_type == 'application/json':
-            globals()['sites_state'] = request.json()
+            globals()['sites_state'] = request.json
             return "200"
         else:
             return "415 Unsupported Media Type"
