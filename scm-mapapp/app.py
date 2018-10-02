@@ -152,14 +152,11 @@ def gen_map(region):
     #print(type(site_state_list),site_state_list) 'site', 'lat', 'lon','leafs','region', 'fm_state'])
     for li in site_state_list:
         if li['id'] is not 'Dead':
-            dfa.loc[li['site']] = [ df.loc[li['site']]['site'], 
-                                    df.loc[li['site']]['lat'], 
-                                    df.loc[li['site']]['lon'], 
-                                    df.loc[li['site']]['leafs'],
-                                    df.loc[li['site']]['region'],      
-                                    {'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)'}]
+            dfa.loc[li['site']]['fm_state'] = {'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)'}
+            print(dfa)
         else:
             dfa.ix[li['site']]['fm_state'] = { 'size':10, 'color': 'rgb(255, 0, 0)' }
+
     tun_list = generate_tunnels(dfa,region)
     tun_list.append(generate_sites(dfa, region))
     #based on the generated site list we should change the center of focus 
