@@ -150,7 +150,7 @@ def gen_map(region):
     for k,v in site_state_dict.items():
         if v['id'] is not 'Dead':
             sitedf.loc[v['site']]['fm_state'] = { 'size':10, 'color': 'rgb(0, 255, 0)' }
-        else
+        else:
             sitedf.loc[v['site']]['fm_state'] = { 'size':10, 'color': 'rgb(255, 0, 0)' }
     tun_list = generate_tunnels(sitedf,region)
     tun_list.append(generate_sites(sitedf, region))
