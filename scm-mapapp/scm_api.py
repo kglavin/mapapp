@@ -58,7 +58,7 @@ def get_sites(sitedf, realm, user, pw, region=0):
                 p = { 'lat':0, 'lon':0}
             lat = p['lat']
             lon = p['lon']
-            sitedf.loc[a['id']] = [a['city'].replace(" ","_"), lat, lon,a['sitelink_leafs'],region,0]
+            sitedf.loc[a['id']] = [a['city'].replace(" ","_"), lat, lon,a['sitelink_leafs'],region,{'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)'}]
     return
 
 def get_sites_proxy(proxy,user="",pw=""):

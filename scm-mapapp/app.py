@@ -145,22 +145,20 @@ def gen_map(region):
     ## for each map update hit the local proxy to get the most recently polled sitesdf
     # this may still be stale data on the proxy but its responsive data. 
     df = get_sites_proxy(globals()['proxy'])
-    dfa = df.copy()
 
     site_state_list = get_sites_state_proxy(globals()['proxy'])
     # calculate the correct fm state (color for the states based on the sites_state values
     #print(type(site_state_list),site_state_list) 'site', 'lat', 'lon','leafs','region', 'fm_state'])
     for li in site_state_list:
         if li['id'] is not 'Dead':
-            dfa.loc[li['site'],'fm_state'] = {'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)'}
-            print(dfa)
+            df.loc[li['site'],'fm_state'] = {'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)'}
         else:
-            dfa.ix[li['site'],'fm_state'] = { 'size':10, 'color': 'rgb(255, 0, 0)' }
+            df.ix[li['site'],'fm_state'] = { 'size':10, 'color': 'rgb(255, 0, 0)' }
 
-    tun_list = generate_tunnels(dfa,region)
-    tun_list.append(generate_sites(dfa, region))
+    tun_list = generate_tunnels(df,region)
+    tun_list.append(generate_sites(df, region))
     #based on the generated site list we should change the center of focus 
-    (mid_lat, mid_lon) = latlon_midpoint(dfa,region)
+    (mid_lat, mid_lon) = latlon_midpoint(df,region)
     
     #TODO: can we focus the zoom of the map to just contain the points in the set?
     # for global networks, this calculation although mathamatically correct is not pleasing so limit center to no be about 50 degrees of latitde
