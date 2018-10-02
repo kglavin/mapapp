@@ -147,12 +147,14 @@ def gen_map(region):
     sitedf = get_sites_proxy(globals()['proxy'])
     site_state_list = get_sites_state_proxy(globals()['proxy'])
     # calculate the correct fm state (color for the states based on the sites_state values
-    print(type(site_state_list),site_state_list)
+    #print(type(site_state_list),site_state_list)
     for li in site_state_list:
         if li['id'] is not 'Dead':
-            sitedf.loc[li['site']]['fm_state'] = { 'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)' }
+            #sitedf.loc[li['site']]['fm_state'] = { 'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)' }
+            print (li['site'], 'Green')
         else:
-            sitedf.loc[li['site']]['fm_state'] = { 'size':10, 'color': 'rgb(255, 0, 0)' }
+            print (li['site'], 'Red')
+            #sitedf.loc[li['site']]['fm_state'] = { 'size':10, 'color': 'rgb(255, 0, 0)' }
     tun_list = generate_tunnels(sitedf,region)
     tun_list.append(generate_sites(sitedf, region))
     #based on the generated site list we should change the center of focus 
