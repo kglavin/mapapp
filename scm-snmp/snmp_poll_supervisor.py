@@ -27,6 +27,7 @@ import time
 from poller_snmp import mp_poll_sites, poll_sites, pivot_sitedata
 from influxdb import InfluxDBClient
 import logging
+import json
 
 def update_sites_dict(proxy='http://127.0.0.1:8040'):
     ret = {}
@@ -35,6 +36,10 @@ def update_sites_dict(proxy='http://127.0.0.1:8040'):
         df =  pd.read_json(r.content, orient='index')
         ret = dict(zip(df.site, df.v4ip))
     return ret
+
+def write_sites_status(site_status_list, proxy='http://127.0.0.1:8040'):
+    r = rq.post(proxy+'/api/sites_state', json=json.dumps(site_status_list))
+    return r
 
 if __name__ == "__main__":
     netrc = netrc.netrc()
@@ -104,9 +109,18 @@ if __name__ == "__main__":
 
         start_poll_time = time.time()
         if len(sites) > 0:            
-            measurements = [ ]
+            measurements = []
+            status = []      
             site_data = mp_poll_sites(pool,sites,community)
             for k,v in site_data.items():
+              # collect the location string as a proxy for an alive appliance. 
+              status_d = dict()
+              status_d['site'] =  v['location']
+              status_d['id']   =  v['id']
+              status_d['time' = v['time']
+              status.append(status_d)
+
+              # take the collected snmp data and pivot so its ready for inclusion into timeseries db. 
               for n in pivot_sitedata(v,'eth'):
                  measurements.append(n)
                  measurement_count +=1
@@ -120,6 +134,9 @@ if __name__ == "__main__":
                 bad_measurement_writes +=1
                 logging.debug('failed to write_points')
                 pass
+            # send the status list to the api server so it can be used for realtime status of the nodes. 
+            # can add link status later on. 
+            #TODO
         now_time = time.time()
         poll_time = now_time-start_poll_time
         if int(poll_time) < 15:

@@ -70,46 +70,55 @@ def poll_site(site, hostname, community='public'):
   '''
   data = {'id': site}    
   data['time'] = time.strftime('%Y-%m-%dT%H:%M:%S', gmtime())
-  try:
-      session = Session(hostname=hostname, community=community, version=2) 
+  session = Session(hostname=hostname, community=community, version=2) 
+
+  try:    
       data['location'] = session.get('sysLocation.0').value
+  except:
+      print(e)
+          data['Location'] = 'Dead'
+          raise
+
+  if data['Location'] is not 'Dead':
+    try:
       data['numinterfaces'] = get_num_interfaces(session)
       data['eth_index'], data['eth_name'], data['vti_index'], data['vti_name'] =  get_if_ids(session)
       ethi = [int(n) for n in data['eth_index']]
       vtii = [int(n) for n in data['vti_index']]
-      try:
-          data['eth_status'],data['vti_status'] = get_if_group(session, 'IF-MIB::ifOperStatus', ethi, vtii)
-      except Exception as e:
-          print(e)
-          data['eth_status'],data['vti_status'] = [],[]
-          raise
-      try:
-          data['eth_ioctet'],data['vti_ioctet'] = get_if_group(session, 'IF-MIB::ifHCInOctets', ethi, vtii)
-      except Exception as e:
-          print(e)
-          data['eth_ioctet'],data['vti_ioctet'] = [],[]
-          raise
-      try:
-          data['eth_ooctet'],data['vti_ooctet'] = get_if_group(session, 'IF-MIB::ifHCOutOctets', ethi, vtii)
-      except Exception as e:
-          print(e)
-          data['eth_ooctet'],data['vti_ooctet'] = [],[]
-          raise
-      try:
-          data['eth_iunicast'],data['vti_iunicast'] = get_if_group(session, 'IF-MIB::ifHCInUcastPkts', ethi, vtii)
-      except Exception as e:
-          print(e)
-          data['eth_iunicast'],data['vti_iunicast'] = [],[]
-          raise
-      try:
-          data['eth_ounicast'],data['vti_ounicast'] = get_if_group(session, 'IF-MIB::ifHCOutUcastPkts', ethi, vtii)
-      except Exception as e:
-          print(e)
-          data['eth_ounicast'],data['vti_ounicast'] = [],[]
-          raise
-  except Exception as e:
+    except Exception as e:
       print(e)
+      data['eth_status'],data['vti_status'] = [],[]
       raise
+    try:
+        data['eth_status'],data['vti_status'] = get_if_group(session, 'IF-MIB::ifOperStatus', ethi, vtii)
+    except Exception as e:
+        print(e)
+        data['eth_status'],data['vti_status'] = [],[]
+        raise
+    try:
+        data['eth_ioctet'],data['vti_ioctet'] = get_if_group(session, 'IF-MIB::ifHCInOctets', ethi, vtii)
+    except Exception as e:
+        print(e)
+        data['eth_ioctet'],data['vti_ioctet'] = [],[]
+        raise
+    try:
+        data['eth_ooctet'],data['vti_ooctet'] = get_if_group(session, 'IF-MIB::ifHCOutOctets', ethi, vtii)
+    except Exception as e:
+        print(e)
+        data['eth_ooctet'],data['vti_ooctet'] = [],[]
+        raise
+    try:
+        data['eth_iunicast'],data['vti_iunicast'] = get_if_group(session, 'IF-MIB::ifHCInUcastPkts', ethi, vtii)
+    except Exception as e:
+        print(e)
+        data['eth_iunicast'],data['vti_iunicast'] = [],[]
+        raise
+    try:
+        data['eth_ounicast'],data['vti_ounicast'] = get_if_group(session, 'IF-MIB::ifHCOutUcastPkts', ethi, vtii)
+    except Exception as e:
+        print(e)
+        data['eth_ounicast'],data['vti_ounicast'] = [],[]
+        raise
   return data
 
 def poll_sites(sites,community='public'):
@@ -144,13 +153,15 @@ def pivot_sitedata(sd,if_type='eth'):
       for the time series we want a linear instance, with device name, and interface id along with all
       the associated measured values,   these measurements are returned as a list of measurement dictionaries
       '''
-  r = []
+  ret = []
   if if_type not in ['eth','vti']:
-      return r          
+      return ret
+  if sd['location'] == 'Dead':
+      return ret      
   es = sd[if_type+'_name'] 
   ind=0
   for e in es: 
-      d = dict()       
+      d = dict()           
       d['measurement'] = 'ifstats'
       d['tags'] = { 'site': sd['location'],
                     'id': sd['id'], 
@@ -161,7 +172,7 @@ def pivot_sitedata(sd,if_type='eth'):
                         'in_unicast' : sd[if_type+'_iunicast'][ind],
                         'out_unicast': sd[if_type+'_ounicast'][ind],
                         'status'     : sd[if_type+'_status'][ind]}
-      r.append(d)
+      ret.append(d)
       ind += 1
-  return r
+  return ret
 

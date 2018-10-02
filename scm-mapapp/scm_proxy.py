@@ -16,6 +16,7 @@ globals()['sitedf'] = init_sitedf()
 globals()['nodedf'] = init_nodedf()
 globals()['eventdf'] = init_eventdf()
 globals()['sites_snmpdf'] = init_sites_snmp()
+sites_state = ''
 
 @app.route('/')
 def api_root():
@@ -60,6 +61,28 @@ def api_snmp_details():
     elif request.method == 'DELETE':
             globals()['sites_snmpdf'] = init_sites_snmp()
             return "200"
+
+
+# 
+# The site status details 
+# 
+@app.route('/api/sites_state',methods = ['GET', 'POST','DELETE'])
+def api_snmp_details():
+    if request.method == 'GET':
+        s = globals()['sites_stats']
+        resp = Response(s, status=200, mimetype='application/json')
+        resp.headers['Link'] = '/api/sites_state'
+        return resp
+    elif request.method == 'POST':
+        if request.content_type == 'application/json':
+            globals()['sites_state'] = request.json()
+            return "200"
+        else:
+            return "415 Unsupported Media Type"
+    elif request.method == 'DELETE':
+            globals()['sites_state'] = ''
+            return "200"
+
 #
 #  Node details
 # 
