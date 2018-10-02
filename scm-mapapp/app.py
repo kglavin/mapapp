@@ -149,10 +149,15 @@ def gen_map(region):
 
     site_state_list = get_sites_state_proxy(globals()['proxy'])
     # calculate the correct fm state (color for the states based on the sites_state values
-    #print(type(site_state_list),site_state_list)
+    #print(type(site_state_list),site_state_list) 'site', 'lat', 'lon','leafs','region', 'fm_state'])
     for li in site_state_list:
         if li['id'] is not 'Dead':
-            dfa.ix[li['site']]['fm_state'] = dict('size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)')
+            dfa.loc[li['site']] = [ df.loc[li['site']]['site'], 
+                                    df.loc[li['site']]['lat'], 
+                                    df.loc[li['site']]['lon'], 
+                                    df.loc[li['site']]['leafs'],
+                                    df.loc[li['site']]['region']      
+                                    {'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)'}]
         else:
             dfa.ix[li['site']]['fm_state'] = { 'size':10, 'color': 'rgb(255, 0, 0)' }
     tun_list = generate_tunnels(dfa,region)
