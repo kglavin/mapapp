@@ -152,9 +152,9 @@ def gen_map(region):
     #print(type(site_state_list),site_state_list)
     for li in site_state_list:
         if li['id'] is not 'Dead':
-            dfa.loc[li['site']]['fm_state'] = { 'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)' }
+            dfa.ix[li['site']]['fm_state'] = { 'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)' }
         else:
-            dfa.loc[li['site']]['fm_state'] = { 'size':10, 'color': 'rgb(255, 0, 0)' }
+            dfa.ix[li['site']]['fm_state'] = { 'size':10, 'color': 'rgb(255, 0, 0)' }
     tun_list = generate_tunnels(dfa,region)
     tun_list.append(generate_sites(dfa, region))
     #based on the generated site list we should change the center of focus 
