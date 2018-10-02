@@ -156,7 +156,7 @@ def gen_map(region):
                                     df.loc[li['site']]['lat'], 
                                     df.loc[li['site']]['lon'], 
                                     df.loc[li['site']]['leafs'],
-                                    df.loc[li['site']]['region']      
+                                    df.loc[li['site']]['region'],      
                                     {'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)'}]
         else:
             dfa.ix[li['site']]['fm_state'] = { 'size':10, 'color': 'rgb(255, 0, 0)' }
