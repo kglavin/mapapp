@@ -74,7 +74,7 @@ def poll_site(site, hostname, community='public'):
 
   try:    
       data['location'] = session.get('sysLocation.0').value
-  except:
+  except Exception as e:
       print(e)
       data['location'] = 'Dead'
       raise

@@ -14,7 +14,7 @@ from dash.dependencies import Input, Output, State
 import pandas as pd
 import netrc
 import scm as scm
-from scm_api import sitedf, nodedf, eventdf, get_sites_proxy, get_nodes_proxy, get_eventlogs_proxy, generate_tunnels, generate_sites,find_tunnel_relationships,latlon_midpoint, get_sites_state_proxy
+from scm_api import sitedf,init_sitedf, nodedf, eventdf, get_sites_proxy, get_nodes_proxy, get_eventlogs_proxy, generate_tunnels, generate_sites,find_tunnel_relationships,latlon_midpoint, get_sites_state_proxy
 from scmbase_html import heading_html, footer_html
 from interface_graphing import query_scmdata
 
