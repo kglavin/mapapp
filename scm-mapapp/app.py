@@ -155,6 +155,7 @@ def gen_map(region):
             if li['site'] in df.index:
                 df.loc[li['site']]['fm_state'] = {'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)'}
             else:
+                print (df.index)
                 print(li['site'], " not in index for gen_map")
         else:
             if li['site'] in df.index:
