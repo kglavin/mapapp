@@ -145,7 +145,7 @@ def gen_map(region):
     ## for each map update hit the local proxy to get the most recently polled sitesdf
     # this may still be stale data on the proxy but its responsive data. 
     df = init_sitedf()
-    get_sites_proxy(df,globals()['proxy'])
+    df = get_sites_proxy(df,globals()['proxy'])
 
     site_state_list = get_sites_state_proxy(globals()['proxy'])
     # calculate the correct fm state (color for the states based on the sites_state values
