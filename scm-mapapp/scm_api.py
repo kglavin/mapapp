@@ -68,7 +68,7 @@ def get_sites_proxy(proxy,user="",pw=""):
     df = init_sitedf()
     r = rq.get(proxy + '/api/sites', auth=(user,pw))
     if r.status_code == 200:
-        df.append(pd.read_json(r.content, orient='index'))
+        df = pd.read_json(r.content, orient='index')
         return df
     else:
         return df
