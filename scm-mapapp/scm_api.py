@@ -61,7 +61,7 @@ def get_sites(sitedf, realm, user, pw, region=0):
             sitedf.loc[a['id']] = [a['city'].replace(" ","_"), lat, lon,a['sitelink_leafs'],region,{'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)'}]
     return
 
-def get_sites_proxy(proxy,user="",pw="", df):
+def get_sites_proxy(df, proxy,user="",pw=""):
     ''' get the sites data using the proxy instead of directly 
         returns a pandas data frame with the received data or empty on a problem
         '''
