@@ -363,7 +363,7 @@ if __name__ == '__main__':
 
     # get the cached information from the scm, the individual pages may refresh this information 
     # on demand as pages are served. 
-    sitedf = get_sites_proxy(proxy)
+    get_sites_proxy(sitedf,proxy)
     nodedf = get_nodes_proxy(proxy)
     eventdf = get_eventlogs_proxy(proxy)
 
