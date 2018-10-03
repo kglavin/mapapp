@@ -61,16 +61,17 @@ def get_sites(sitedf, realm, user, pw, region=0):
             sitedf.loc[a['id']] = [a['city'].replace(" ","_"), lat, lon,a['sitelink_leafs'],region,{'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)'}]
     return
 
-def get_sites_proxy(df,proxy,user="",pw=""):
+def get_sites_proxy(proxy,user="",pw=""):
     ''' get the sites data using the proxy instead of directly 
         returns a pandas data frame with the received data or empty on a problem
         '''
+    df = init_sitedf()
     r = rq.get(proxy + '/api/sites', auth=(user,pw))
     if r.status_code == 200:
         df.append(pd.read_json(r.content, orient='index'))
         return df
     else:
-        return df.append(init_sitesdf())
+        return df
 
 
 def get_nodes(nodedf, sitedf, realm, user, pw, region=0):

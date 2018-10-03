@@ -144,8 +144,7 @@ app.layout = scm_layout()
 def gen_map(region):
     ## for each map update hit the local proxy to get the most recently polled sitesdf
     # this may still be stale data on the proxy but its responsive data. 
-    df = init_sitedf()
-    df = get_sites_proxy(df,globals()['proxy'])
+    df = get_sites_proxy(globals()['proxy'])
 
     site_state_list = get_sites_state_proxy(globals()['proxy'])
     # calculate the correct fm state (color for the states based on the sites_state values
@@ -370,7 +369,7 @@ if __name__ == '__main__':
 
     # get the cached information from the scm, the individual pages may refresh this information 
     # on demand as pages are served. 
-    get_sites_proxy(sitedf,proxy)
+    sitedf = get_sites_proxy(proxy)
     nodedf = get_nodes_proxy(proxy)
     eventdf = get_eventlogs_proxy(proxy)
 
