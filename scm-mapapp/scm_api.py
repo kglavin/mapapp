@@ -58,7 +58,7 @@ def get_sites(sitedf, realm, user, pw, region=0):
                 p = { 'lat':0, 'lon':0}
             lat = p['lat']
             lon = p['lon']
-            sitedf.loc[a['id']] = [a['city'].replace(" ","_"), lat, lon,a['sitelink_leafs'],region,{'size':10, 'symbol':'triangle', 'color': 'rgb(0, 255, 0)'}]
+            sitedf.loc[a['id']] = [a['city'].replace(" ","_"), lat, lon,a['sitelink_leafs'],region,{'size':10,'color': 'rgb(0, 255, 0)'}]
     return
 
 def get_sites_proxy(proxy,user="",pw=""):
@@ -257,7 +257,7 @@ def generate_sites(green_df, red_df, region=0):
             'lon': red_df['lon'],
             'type': 'scattermapbox',
             'mode':'markers',
-            'marker': { 'size':10, 'color': 'rgb(255, 0, 0)' },
+            'marker': { 'size':20, 'color': 'rgb(255, 0, 0)' },
             'text': red_df['site']
         } 
         gl = {                                                     
@@ -265,7 +265,7 @@ def generate_sites(green_df, red_df, region=0):
             'lon': green_df['lon'],
             'type': 'scattermapbox',
             'mode':'markers',
-            'marker': { 'size':10, 'color': 'rgb(0, 255, 0)' },
+            'marker': { 'size':20, 'color': 'rgb(0, 255, 0)' },
             'text': green_df['site']
         }
     else:
@@ -274,7 +274,7 @@ def generate_sites(green_df, red_df, region=0):
             'lon': red_df.loc[red_df['region'] == region]['lon'],
             'type': 'scattermapbox',
             'mode':'markers',
-            'marker': { 'size':10, 'color': 'rgb(255, 0, 0)' },
+            'marker': { 'size':20, 'color': 'rgb(255, 0, 0)' },
             'text': red_df['site']
         }
         gl = {                                                     
@@ -282,9 +282,10 @@ def generate_sites(green_df, red_df, region=0):
             'lon': green_df.loc[green_df['region'] == region]['lon'],
             'type': 'scattermapbox',
             'mode':'markers',
-            'marker': { 'size':10, 'color': 'rgb(0, 255, 0)' },
+            'marker': { 'size':20, 'color': 'rgb(0, 255, 0)' },
             'text': green_df['site']
         }
+    print ('rl,gl', rl, gl)
     return rl, gl
 
 def latlon_midpoint(sitedf, region=0):
