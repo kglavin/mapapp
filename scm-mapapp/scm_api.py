@@ -199,6 +199,11 @@ def find_tunnel_relationships(sitedf,region=0):
 
     #based on the generated site list we should change the center of focus 
     (mid_lat, mid_lon) = latlon_midpoint(sitedf,region)
+    # for global networks, this calculation although mathamatically correct is not pleasing so limit center to no be about 50 degrees of latitde
+    if (mid_lat > 50):
+        mid_lat = 50
+    if (mid_lat < -50):
+        mid_lad = -50
 
     # for all the site entries find elements that have reference entried in their leaf attribute
     # add them the ll list
