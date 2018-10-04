@@ -58,7 +58,7 @@ def get_sites(sitedf, realm, user, pw, region=0):
                 p = { 'lat':0, 'lon':0}
             lat = p['lat']
             lon = p['lon']
-            sitedf.loc[a['id']] = [a['city'].replace(" ","_"), lat, lon,a['sitelink_leafs'],region,{'size':10,'color': 'rgb(0, 255, 0)'}]
+            sitedf.loc[a['id']] = [a['city'].replace(" ","_"), lat, lon,a['sitelink_leafs'],region,{'size':10,'color': 'rgb(255, 0, 0)'}]
     return
 
 def get_sites_proxy(proxy,user="",pw=""):
@@ -190,32 +190,49 @@ def find_tunnel_relationships(sitedf,region=0):
         this implementation does not handle dual-hub ( bug in SCM rest api) and 
         it does not enumerate the full mesh link members
         '''
-    ll = []
+    leaflist = []
+    spokes = []
+    mesh_nodes = []
     r = []
     if len(sitedf) < 1:
         return r
 
+    #based on the generated site list we should change the center of focus 
+    (mid_lat, mid_lon) = latlon_midpoint(df,region)
+
     # for all the site entries find elements that have reference entried in their leaf attribute
     # add them the ll list
+    # this will be all the spoke links. 
     for s in sitedf.index:
         if region == 0:
             if len(sitedf.loc[s]['leafs']) > 0 :
-                ll.append((s,sitedf.loc[s]['leafs']))
+                leaflist.append((s,sitedf.loc[s]['leafs']))
         else:
          if sitedf.loc[s]['region'] == region :
             if len(sitedf.loc[s]['leafs']) > 0 : 
-                ll.append((s,sitedf.loc[s]['leafs']))
+                leaflist.append((s,sitedf.loc[s]['leafs']))
+
     # for each of the entries on this list, 
     # derive the site/city information and also get the 
     # lat/lon entries for both ends of the link 
     # add these to the return list r
-    for a in ll:
-        (h,sl) = a
-        h_city = sitedf.loc[h]['site']
-        for s in sl:
-            s_city =sitedf.loc[s]['site']
-            r.append(((h_city,sitedf.loc[h]['lat'],sitedf.loc[h]['lon']),
-                      (s_city,sitedf.loc[s]['lat'],sitedf.loc[s]['lon'])))
+    for a in leaflist:
+        (hub,spokelist) = a
+        h_city = sitedf.loc[hub]['site']
+        for spoke in spokelist:
+            spokes.append(spoke)
+            s_city =sitedf.loc[spoke]['site']
+            r.append(((h_city,sitedf.loc[hub]['lat'],sitedf.loc[hub]['lon']),
+                      (s_city,sitedf.loc[spoke]['lat'],sitedf.loc[spoke]['lon'])))
+    #
+    # derive full mesh but draw it to the center triangle ( make this the regional center later.)
+    # 
+    for m in sitedf.index:
+        if m not in spokes():
+            m_city =sitedf.loc[m]['site']
+            r.append((('Center',mid_lat,mid_lon),
+                      (m_city,sitedf.loc[m]['lat'],sitedf.loc[m]['lon'])))
+
     return r
 
 
@@ -301,7 +318,7 @@ def latlon_midpoint(sitedf, region=0):
         (region == 0 means all sites) and return this lat/lon cordinate so it may be used
         to center the map'''
     if len(sitedf) < 1:
-        return(0,-180)
+        return(0,0)
     if region == 0:
         lat = sitedf['lat']
         lon = sitedf['lon']
