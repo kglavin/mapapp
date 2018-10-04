@@ -181,7 +181,7 @@ def get_sites_state_proxy(proxy,user="",pw=""):
     if r.status_code == 200:
         return json.loads(r.content)
     else:
-        return {}
+        return []
 
 def find_tunnel_relationships(sitedf,region=0):
     ''' using the site data frame, derive the tunnel relationships 

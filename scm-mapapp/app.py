@@ -154,18 +154,18 @@ def gen_map(region):
     # calculate the correct fm state (color for the states based on the sites_state values
     #print(type(site_state_list),site_state_list) 'site', 'lat', 'lon','leafs','region', 'fm_state'])
     for li in site_state_list:
+        print(type(li), li)
         if li['id'] is not 'Dead':
             if li['site'] in df.index:
              green_df = green_df.append(df.loc[li['site']])
              #df.drop(df.loc[li['site']], inplace=True)
             else:
-                print (df.index)
                 print(li['site'], " not in index for gen_map")
         else:
             if li['site'] in df.index:  
                 print("dead-site", df.loc[li['site']])
             else:
-                print(li['site'], "Dead -  not in index for gen_map")
+                print(li, "Dead -  not in index for gen_map")
 
     tun_list = generate_tunnels(df,region)
     tun_list.append(generate_sites(green_df, df, region))
