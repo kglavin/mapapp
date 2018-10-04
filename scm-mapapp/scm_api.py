@@ -247,43 +247,45 @@ def generate_tunnels(sitedf, region=0):
 
 def generate_sites(green_df, red_df, region=0):
     '''region=0 is all sites, create the mapbox marker defintions for the sites'''
+    rl = {}
+    gl = {}
     if len(sitedf)<1:
-        return [{}]
+        return rl, gl
     if region == 0:
-        l = [{                                                     
+        rl = {                                                     
             'lat': red_df['lat'],
             'lon': red_df['lon'],
             'type': 'scattermapbox',
             'mode':'markers',
             'marker': { 'size':10, 'color': 'rgb(255, 0, 0)' },
             'text': red_df['site']
-        }, 
-        {                                                     
+        } 
+        gl = {                                                     
             'lat': green_df['lat'],
             'lon': green_df['lon'],
             'type': 'scattermapbox',
             'mode':'markers',
             'marker': { 'size':10, 'color': 'rgb(0, 255, 0)' },
             'text': green_df['site']
-        }]
+        }
     else:
-        l = [{                                                     
+        rl = {                                                     
             'lat': red_df.loc[red_df['region'] == region]['lat'],
             'lon': red_df.loc[red_df['region'] == region]['lon'],
             'type': 'scattermapbox',
             'mode':'markers',
             'marker': { 'size':10, 'color': 'rgb(255, 0, 0)' },
             'text': red_df['site']
-        },
-        {                                                     
+        }
+        gl = {                                                     
             'lat': green_df.loc[green_df['region'] == region]['lat'],
             'lon': green_df.loc[green_df['region'] == region]['lon'],
             'type': 'scattermapbox',
             'mode':'markers',
             'marker': { 'size':10, 'color': 'rgb(0, 255, 0)' },
             'text': green_df['site']
-        }]
-    return l
+        }
+    return rl, gl
 
 def latlon_midpoint(sitedf, region=0):
     ''' see http://www.geomidpoint.com/calculation.html, 
