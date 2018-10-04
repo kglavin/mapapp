@@ -168,8 +168,9 @@ def gen_map(region):
 
     tun_list = generate_tunnels(df,region)
     rl, gl = generate_sites(green_df, df, region)
-    tun_list.append(gl)
     tun_list.append(rl)
+    # drap green last so its the top layer of dots. 
+    tun_list.append(gl)
     
     #TODO: can we focus the zoom of the map to just contain the points in the set?
     # for global networks, this calculation although mathamatically correct is not pleasing so limit center to no be about 50 degrees of latitde
