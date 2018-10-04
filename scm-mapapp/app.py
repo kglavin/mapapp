@@ -157,7 +157,7 @@ def gen_map(region):
         if li['id'] is not 'Dead':
             if li['site'] in df.index:
              green_df = green_df.append(df.loc[li['site']])
-             df.drop(df.loc[li['site']].index, inplace=True)
+             df.drop(df.loc[li['site']], inplace=True)
             else:
                 print (df.index)
                 print(li['site'], " not in index for gen_map")
