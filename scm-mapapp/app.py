@@ -27,10 +27,13 @@ app.config.supress_callback_exceptions = True
 # Traffic Page -- this allows for interface and tunnel data to be presented in graphical format
 ###
 def traffic_dropdowns(sitedf):
-    sites = sitedf['site'].tolist()
+    if len(sitedf['site']) > 0:
+        sites = sitedf['site'].tolist()
+    else:
+        sites = ['nosite']
     interfaces = [ 0,1,2,3,4]
     tun=['eth','tun']
-    duration = [ '1h', '30m', '5m', '24h', '7d']
+    duration = [ '1h', '3h','30m', '5m', '24h', '7d']
     gtype=['Packets','Octets']
 
     d1 = dcc.Dropdown(id='if-stats-site',
