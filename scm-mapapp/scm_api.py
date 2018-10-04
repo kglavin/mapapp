@@ -254,7 +254,7 @@ def generate_sites(green_df, red_df, region=0):
                 'lon': red_df['lon'],
                 'type': 'scattermapbox',
                 'mode':'markers',
-                'marker': { 'size':20, 'color': 'rgb(255, 0, 0)' },
+                'marker': { 'size':10, 'color': 'rgb(255, 0, 0)' },
                 'text': red_df['site']
             }
         else:
@@ -265,7 +265,7 @@ def generate_sites(green_df, red_df, region=0):
                 'lon': green_df['lon'],
                 'type': 'scattermapbox',
                 'mode':'markers',
-                'marker': { 'size':20, 'color': 'rgb(0, 255, 0)' },
+                'marker': { 'size':10, 'color': 'rgb(0, 255, 0)' },
                 'text': green_df['site']
             }
         else:
@@ -277,7 +277,7 @@ def generate_sites(green_df, red_df, region=0):
                 'lon': red_df.loc[red_df['region'] == region]['lon'],
                 'type': 'scattermapbox',
                 'mode':'markers',
-                'marker': { 'size':20, 'color': 'rgb(255, 0, 0)' },
+                'marker': { 'size':10, 'color': 'rgb(255, 0, 0)' },
                 'text': red_df['site']
             }
         else: 
@@ -288,7 +288,7 @@ def generate_sites(green_df, red_df, region=0):
                 'lon': green_df.loc[green_df['region'] == region]['lon'],
                 'type': 'scattermapbox',
                 'mode':'markers',
-                'marker': { 'size':20, 'color': 'rgb(0, 255, 0)' },
+                'marker': { 'size':10, 'color': 'rgb(0, 255, 0)' },
                 'text': green_df['site']
             }
         else: 

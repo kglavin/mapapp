@@ -166,11 +166,12 @@ def gen_map(region):
             else:
                 print(li, "Dead -  not in index for gen_map")
 
-    print(green_df)
     tun_list = generate_tunnels(df,region)
     rl, gl = generate_sites(green_df, df, region)
-    tun_list.append(rl)
-    tun_list.append(gl)
+    if len(gl) > 0:
+        tun_list.append(gl)
+    if len(rl) > 0:
+        tun_list.append(rl)
     
     #TODO: can we focus the zoom of the map to just contain the points in the set?
     # for global networks, this calculation although mathamatically correct is not pleasing so limit center to no be about 50 degrees of latitde
