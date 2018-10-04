@@ -293,7 +293,6 @@ def generate_sites(green_df, red_df, region=0):
             }
         else: 
             gl = {}
-    print ('rl,gl', rl, gl)
     return rl, gl
 
 def latlon_midpoint(sitedf, region=0):
