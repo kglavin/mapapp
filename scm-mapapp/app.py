@@ -256,13 +256,14 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
         if len(data) > 0:
             # four lines on the graph ( and in and an out) and rolling average
             figure={
-                'data': [{
+                'data': [
+                    {
                     'x': data.index,
                     'y': data['in'],
                     'name': 'In '+packets +'/s',
                     'mode':'lines',
                     'line': {
-                        'shape':'linear',
+                        'shape':'spline',
                         'width':1
                         },
                     'marker': {'size': 2}
@@ -273,7 +274,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
                     'name': 'Out '+packets+'/s',
                     'mode':'lines',
                     'line': {
-                        'shape':'linear',
+                        'shape':'spline',
                         'width':1
                         },
                     'marker': {'size': 2}
