@@ -231,13 +231,13 @@ def gen_if_stats_data(site,tun,eth,duration,packets):
         if packets in 'Octets':
             data['in'] = pd.to_numeric(data['in_octets'], errors='coerce').diff()/data['deltaT']
             data['out'] = pd.to_numeric(data['out_octets'], errors='coerce').diff()/data['deltaT']* -1
-            data['in_rolling']= data['in'].rolling(5).mean()
-            data['out_rolling']= data['out'].rolling(5).mean()
+            data['in_rolling']= data['in'].rolling(3).mean()
+            data['out_rolling']= data['out'].rolling(3).mean()
         else:
             data['in'] = pd.to_numeric(data['in_unicast'], errors='coerce').diff()/data['deltaT']
             data['out'] = pd.to_numeric(data['out_unicast'], errors='coerce').diff()/data['deltaT']*-1
-            data['in_rolling']= data['in'].rolling(5).mean()
-            data['out_rolling']= data['out'].rolling(5).mean()
+            data['in_rolling']= data['in'].rolling(3).mean()
+            data['out_rolling']= data['out'].rolling(3).mean()
     return data
 
 #dash.dependencies.Input('graph_refresh', 'value')
