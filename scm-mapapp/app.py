@@ -27,7 +27,7 @@ app.config.supress_callback_exceptions = True
 # Traffic Page -- this allows for interface and tunnel data to be presented in graphical format
 ###
 def traffic_dropdowns(sitedf):
-    if len(sitedf['site']) > 0:
+    if len(sitedf) > 0:
         sites = sitedf['site'].tolist()
     else:
         sites = ['nosite']
