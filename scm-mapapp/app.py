@@ -154,7 +154,6 @@ def gen_map(region):
     # calculate the correct fm state (color for the states based on the sites_state values
     #print(type(site_state_list),site_state_list) 'site', 'lat', 'lon','leafs','region', 'fm_state'])
     for li in site_state_list:
-        print(type(li), li)
         if li['id'] is not 'Dead':
             if li['site'] in df.index:
              green_df = green_df.append(df.loc[li['site']])
