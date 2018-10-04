@@ -247,44 +247,52 @@ def generate_tunnels(sitedf, region=0):
 
 def generate_sites(green_df, red_df, region=0):
     '''region=0 is all sites, create the mapbox marker defintions for the sites'''
-    rl = {}
-    gl = {}
-    if len(sitedf)<1:
-        return rl, gl
     if region == 0:
-        rl = {                                                     
-            'lat': red_df['lat'],
-            'lon': red_df['lon'],
-            'type': 'scattermapbox',
-            'mode':'markers',
-            'marker': { 'size':20, 'color': 'rgb(255, 0, 0)' },
-            'text': red_df['site']
-        } 
-        gl = {                                                     
-            'lat': green_df['lat'],
-            'lon': green_df['lon'],
-            'type': 'scattermapbox',
-            'mode':'markers',
-            'marker': { 'size':20, 'color': 'rgb(0, 255, 0)' },
-            'text': green_df['site']
-        }
+        if len(red_df) > 0:
+            rl = {                                                     
+                'lat': red_df['lat'],
+                'lon': red_df['lon'],
+                'type': 'scattermapbox',
+                'mode':'markers',
+                'marker': { 'size':20, 'color': 'rgb(255, 0, 0)' },
+                'text': red_df['site']
+            }
+        else:
+            rl = {}
+        if len(green_df) > 0:   
+            gl = {                                                     
+                'lat': green_df['lat'],
+                'lon': green_df['lon'],
+                'type': 'scattermapbox',
+                'mode':'markers',
+                'marker': { 'size':20, 'color': 'rgb(0, 255, 0)' },
+                'text': green_df['site']
+            }
+        else:
+            gl = {}
     else:
-        rl = {                                                     
-            'lat': red_df.loc[red_df['region'] == region]['lat'],
-            'lon': red_df.loc[red_df['region'] == region]['lon'],
-            'type': 'scattermapbox',
-            'mode':'markers',
-            'marker': { 'size':20, 'color': 'rgb(255, 0, 0)' },
-            'text': red_df['site']
-        }
-        gl = {                                                     
-            'lat': green_df.loc[green_df['region'] == region]['lat'],
-            'lon': green_df.loc[green_df['region'] == region]['lon'],
-            'type': 'scattermapbox',
-            'mode':'markers',
-            'marker': { 'size':20, 'color': 'rgb(0, 255, 0)' },
-            'text': green_df['site']
-        }
+        if len(red_df) > 0:
+            rl = {                                                     
+                'lat': red_df.loc[red_df['region'] == region]['lat'],
+                'lon': red_df.loc[red_df['region'] == region]['lon'],
+                'type': 'scattermapbox',
+                'mode':'markers',
+                'marker': { 'size':20, 'color': 'rgb(255, 0, 0)' },
+                'text': red_df['site']
+            }
+        else: 
+            rl = {}
+        if len(green_df) > 0: 
+            gl = {                                                     
+                'lat': green_df.loc[green_df['region'] == region]['lat'],
+                'lon': green_df.loc[green_df['region'] == region]['lon'],
+                'type': 'scattermapbox',
+                'mode':'markers',
+                'marker': { 'size':20, 'color': 'rgb(0, 255, 0)' },
+                'text': green_df['site']
+            }
+        else: 
+            gl = {}
     print ('rl,gl', rl, gl)
     return rl, gl
 
