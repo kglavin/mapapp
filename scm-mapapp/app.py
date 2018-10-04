@@ -168,7 +168,7 @@ def gen_map(region):
                 print(li, "Dead -  not in index for gen_map")
 
     tun_list = generate_tunnels(df,region)
-    rl, gl = generate_sites(green_df, red_df, region)
+    rl, gl = generate_sites(green_df, df, region)
     tun_list.append(rl)
     # drap green last so its the top layer of dots. 
     tun_list.append(gl)
