@@ -256,7 +256,7 @@ def gen_if_stats_data(site,tun,eth,duration,packets):
               ])
 def gen_if_stats_graphs(site,tun,eth,duration,packets):
         data=gen_if_stats_data(site,tun,eth,duration,packets)
-        if packets is 'Octets':
+        if packets == 'Octets':
             packets = 'Bits'
         if len(data) > 0:
             # four lines on the graph ( and in and an out) and rolling average
