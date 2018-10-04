@@ -145,6 +145,7 @@ def gen_map(region):
     ## for each map update hit the local proxy to get the most recently polled sitesdf
     # this may still be stale data on the proxy but its responsive data.
     green_df = init_sitedf()
+    red_df = init_sitedf()
     df = get_sites_proxy(globals()['proxy'])
 
     #based on the generated site list we should change the center of focus 
@@ -162,12 +163,12 @@ def gen_map(region):
                 print(li['site'], " not in index for gen_map")
         else:
             if li['site'] in df.index:  
-                print("dead-site", df.loc[li['site']])
+                red_df = red_df.append(df.loc[li['site']])
             else:
                 print(li, "Dead -  not in index for gen_map")
 
     tun_list = generate_tunnels(df,region)
-    rl, gl = generate_sites(green_df, df, region)
+    rl, gl = generate_sites(green_df, red_df, region)
     tun_list.append(rl)
     # drap green last so its the top layer of dots. 
     tun_list.append(gl)
