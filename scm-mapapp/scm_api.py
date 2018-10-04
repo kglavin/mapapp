@@ -245,28 +245,44 @@ def generate_tunnels(sitedf, region=0):
         lines.append(scattermapbox_line(a_lat, a_lon, z_lat, z_lon))
     return lines
 
-def generate_sites(sitedf, region=0):
+def generate_sites(green_df, red_df, region=0):
     '''region=0 is all sites, create the mapbox marker defintions for the sites'''
     if len(sitedf)<1:
-        return {}
+        return [{}]
     if region == 0:
-        l = {                                                     
-            'lat': sitedf['lat'],
-            'lon': sitedf['lon'],
+        l = [{                                                     
+            'lat': red_df['lat'],
+            'lon': red_df['lon'],
             'type': 'scattermapbox',
             'mode':'markers',
-            'marker': sitedf['fm_state'],
-            'text': sitedf['site']
-        }
+            'marker': { 'size':10, 'color': 'rgb(255, 0, 0)' },
+            'text': red_df['site']
+        }, 
+        {                                                     
+            'lat': green_df['lat'],
+            'lon': green_df['lon'],
+            'type': 'scattermapbox',
+            'mode':'markers',
+            'marker': { 'size':10, 'color': 'rgb(0, 255, 0)' },
+            'text': green_df['site']
+        }]
     else:
-        l = {                                                     
-            'lat': sitedf.loc[sitedf['region'] == region]['lat'],
-            'lon': sitedf.loc[sitedf['region'] == region]['lon'],
+        l = [{                                                     
+            'lat': red_df.loc[red_df['region'] == region]['lat'],
+            'lon': red_df.loc[red_df['region'] == region]['lon'],
             'type': 'scattermapbox',
             'mode':'markers',
-            'marker': sitedf.loc[sitedf['region'] == region]['fm_state'],
-            'text': sitedf['site']
-        }
+            'marker': { 'size':10, 'color': 'rgb(255, 0, 0)' },
+            'text': red_df['site']
+        },
+        {                                                     
+            'lat': green_df.loc[green_df['region'] == region]['lat'],
+            'lon': green_df.loc[green_df['region'] == region]['lon'],
+            'type': 'scattermapbox',
+            'mode':'markers',
+            'marker': { 'size':10, 'color': 'rgb(0, 255, 0)' },
+            'text': green_df['site']
+        }]
     return l
 
 def latlon_midpoint(sitedf, region=0):
