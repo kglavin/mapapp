@@ -77,7 +77,7 @@ def poll_site(site, hostname, community='public'):
   except Exception as e:
       print(e)
       data['location'] = 'Dead'
-      raise
+      pass
 
   if data['location'] is not 'Dead':
     try:
@@ -88,37 +88,37 @@ def poll_site(site, hostname, community='public'):
     except Exception as e:
       print(e)
       data['eth_status'],data['vti_status'] = [],[]
-      raise
+      pass
     try:
         data['eth_status'],data['vti_status'] = get_if_group(session, 'IF-MIB::ifOperStatus', ethi, vtii)
     except Exception as e:
         print(e)
         data['eth_status'],data['vti_status'] = [],[]
-        raise
+        pass
     try:
         data['eth_ioctet'],data['vti_ioctet'] = get_if_group(session, 'IF-MIB::ifHCInOctets', ethi, vtii)
     except Exception as e:
         print(e)
         data['eth_ioctet'],data['vti_ioctet'] = [],[]
-        raise
+        pass
     try:
         data['eth_ooctet'],data['vti_ooctet'] = get_if_group(session, 'IF-MIB::ifHCOutOctets', ethi, vtii)
     except Exception as e:
         print(e)
         data['eth_ooctet'],data['vti_ooctet'] = [],[]
-        raise
+        pass
     try:
         data['eth_iunicast'],data['vti_iunicast'] = get_if_group(session, 'IF-MIB::ifHCInUcastPkts', ethi, vtii)
     except Exception as e:
         print(e)
         data['eth_iunicast'],data['vti_iunicast'] = [],[]
-        raise
+        pass
     try:
         data['eth_ounicast'],data['vti_ounicast'] = get_if_group(session, 'IF-MIB::ifHCOutUcastPkts', ethi, vtii)
     except Exception as e:
         print(e)
         data['eth_ounicast'],data['vti_ounicast'] = [],[]
-        raise
+        pass
   return data
 
 def poll_sites(sites,community='public'):
