@@ -201,7 +201,7 @@ def gen_map(region):
             'lon': [mid_lon],
             'type': 'scattermapbox',
             'mode':'markers',
-            'marker':{ 'size':10, 'symbol':'triangle', 'color': 'rgb(0, 0, 255)' },
+            'marker':{ 'size':15, 'symbol':'triangle', 'color': 'rgb(0, 0, 255)' },
             'text': "Center"
         }
     tun_list.append(m_point)

@@ -288,7 +288,8 @@ def find_tunnel_relationships(sitedf,region=0):
                 m_city = sitedf.loc[m]['site']
                 r.append((('Center',mid_lat,mid_lon),
                         (m_city,sitedf.loc[m]['lat'],sitedf.loc[m]['lon'])))
-            else:
+        else:
+            if m not in spokes:
                 if sitedf.loc[m]['region'] == region :
                     m_city = sitedf.loc[m]['site']
                     r.append((('Center',mid_lat,mid_lon),
@@ -297,7 +298,7 @@ def find_tunnel_relationships(sitedf,region=0):
 
 
 
-def scattermapbox_line(a_lat, a_lon, z_lat, z_lon, color='rgb(255, 0, 0)'):
+def scattermapbox_line(a_lat, a_lon, z_lat, z_lon, color='rgb(0, 255, 0)'):
     ''' create a mapbox line definition using a and z lat/lon and also a color'''
     return { 
             'lat': [a_lat, z_lat ],
