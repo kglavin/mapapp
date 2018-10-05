@@ -233,11 +233,16 @@ def find_tunnel_relationships(sitedf,region=0):
     # derive full mesh but draw it to the center triangle ( make this the regional center later.)
     # 
     for m in sitedf.index:
-        if m not in spokes:
-            m_city =sitedf.loc[m]['site']
-            r.append((('Center',mid_lat,mid_lon),
-                      (m_city,sitedf.loc[m]['lat'],sitedf.loc[m]['lon'])))
-
+        if region == 0:
+            if m not in spokes:
+                m_city = sitedf.loc[m]['site']
+                r.append((('Center',mid_lat,mid_lon),
+                        (m_city,sitedf.loc[m]['lat'],sitedf.loc[m]['lon'])))
+            else:
+                if sitedf.loc[m]['region'] == region :
+                    m_city = sitedf.loc[m]['site']
+                    r.append((('Center',mid_lat,mid_lon),
+                            (m_city,sitedf.loc[m]['lat'],sitedf.loc[m]['lon'])))
     return r
 
 
