@@ -1,6 +1,8 @@
 
 #
-# basic implmentation of the SteelConnect Rest API implemented using the 
+# basic implmentation of the SteelConnect Rest API implemented 
+
+# https://support.riverbed.com/apis/    using the 
 # requests library and credentials that were retried from the netrc sub-system
 # in this implementaition realm that be the full URL including the SCM org designation 
 # or it can be just the realm portion, the results will be determinied by the RBAC 
@@ -47,8 +49,8 @@ def get_by_id(item, id, realm, user, pw):
         'zone':'/api/scm.config/1.0/zone/{id}',
         'device':'/api/scm.config/1.0/device/{id}',
         'path_rule':'/api/scm.config/1.0/path_rule/{id}',
-        'status':'/api/scm.config/1.0.status',
-        'sitelink':'api/scm.reporting/1.0/site/{id}'
+        'status':'/api/scm.config/1.0/status',
+        'sitelinks':'/api/scm.reporting/1.0/site/{id}/sitelinks',
     }
 
     which_item = choices.get(item, 'status')

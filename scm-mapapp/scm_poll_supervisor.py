@@ -9,7 +9,7 @@ import multiprocessing as mp
 import netrc 
 import time
 import requests as rq
-from scm_api import init_sitedf, sitedf, init_nodedf, nodedf, init_eventdf, eventdf,uplinkdf, init_uplinkdf, init_sites_snmp, sites_snmpdf, get_sites, get_nodes, get_eventlogs, get_uplinks, gen_sites_snmp, post_sites_snmp
+from scm_api import init_sitedf, sitedf, init_nodedf, nodedf, init_eventdf, eventdf,uplinkdf, init_uplinkdf, init_sites_snmp, sites_snmpdf, sitelinksdf, get_sitelinks, post_sitelinks, init_sitelinksdf,  get_sites, get_nodes, get_eventlogs, get_uplinks, gen_sites_snmp, post_sites_snmp
 
 
 if __name__ == "__main__":
@@ -29,7 +29,7 @@ if __name__ == "__main__":
         globals()['nodedf']       = init_nodedf()
         globals()['eventdf']      = init_eventdf()
         globals()['sites_snmpdf'] = init_sites_snmp()
-        globals()['uplinkdf']     = init_uplinkdf()
+        globals()['sitelinksdf']     = init_sitelinksdf()
 
         start_poll_time = time.time()
         region = 1
@@ -45,8 +45,10 @@ if __name__ == "__main__":
             get_nodes(nodedf, sitedf, realm, user, pw,region)
             get_uplinks(uplinkdf, sitedf, realm, user, pw, region)
             get_eventlogs(eventdf,realm,user,pw,region)
+            get_sitelinks(sitelinksdf, sitedf, realm, user, pw, region)
             region += 1
 
+        post_sitelinks(proxy, sitelinksdf)
         gen_sites_snmp(sites_snmpdf,uplinkdf) 
         post_sites_snmp(proxy, sites_snmpdf)
 

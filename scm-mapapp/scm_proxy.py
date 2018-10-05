@@ -4,7 +4,7 @@
 # subsytems may 'get' the data or 'post' the data for others to 'get'
 #
 
-from scm_api import sitedf, nodedf, eventdf, sites_snmpdf, uplinkdf,  init_sitedf, init_nodedf, init_eventdf,init_sites_snmp, init_uplinkdf
+from scm_api import sitedf, nodedf, eventdf, sites_snmpdf, uplinkdf,sitelinksdf,  init_sitedf, init_nodedf, init_eventdf,init_sites_snmp, init_sitelinksdf, init_uplinkdf
 from flask import Flask, url_for
 from flask import request, Response
 import pandas as pd
@@ -16,7 +16,9 @@ globals()['sitedf'] = init_sitedf()
 globals()['nodedf'] = init_nodedf()
 globals()['eventdf'] = init_eventdf()
 globals()['sites_snmpdf'] = init_sites_snmp()
+#globals()['sitelinksdf'] = init_sitelinksdf()
 sites_state = ''
+sitelinks = ''
 
 @app.route('/')
 def api_root():
@@ -37,7 +39,7 @@ def api_sites():
             globals()['sitedf'] = pd.read_json(request.get_json(), orient='index')
             return "200"
         else:
-            return "415 Unsupported Media Type"
+            return "415"
     elif request.method == 'DELETE':
             globals()['sitedf'] = init_sitedf()
             return "200"
@@ -57,9 +59,29 @@ def api_snmp_details():
             globals()['sites_snmpdf'] = pd.read_json(request.get_json(), orient='index')
             return "200"
         else:
-            return "415 Unsupported Media Type"
+            return "415"
     elif request.method == 'DELETE':
             globals()['sites_snmpdf'] = init_sites_snmp()
+            return "200"
+#
+# slitelinks
+# 
+
+@app.route('/api/sitelinks',methods = ['GET', 'POST','DELETE'])
+def api_sitelinks():
+    if request.method == 'GET':
+        s = globals()['sitelinks']
+        resp = Response(s, status=200, mimetype='application/json')
+        resp.headers['Link'] = '/api/sitelinks'
+        return resp
+    elif request.method == 'POST':
+        if request.content_type == 'application/json':
+            globals()['sitelinks'] = request.json
+            return "200"
+        else:
+            return "415"
+    elif request.method == 'DELETE':
+            globals()['sitelinks'] = ''
             return "200"
 
 # 
@@ -77,7 +99,7 @@ def api_sites_state():
             globals()['sites_state'] = request.json
             return "200"
         else:
-            return "415 Unsupported Media Type"
+            return "415"
     elif request.method == 'DELETE':
             globals()['sites_state'] = ''
             return "200"
@@ -97,7 +119,7 @@ def api_nodes():
             globals()['nodedf'] = pd.read_json(request.get_json(), orient='index')
             return "200"
         else:
-            return "415 Unsupported Media Type "
+            return "415"
     elif request.method == 'DELETE':
             globals()['nodedf'] = init_nodedf()
             return "200"
@@ -116,7 +138,7 @@ def api_eventlogs():
             globals()['eventdf'] = pd.read_json(request.get_json(), orient='index')
             return "200"
         else:
-            return "415 Unsupported Media Type"
+            return "415"
     elif request.method == 'DELETE':
             globals()['nodedf'] = init_eventdf()
             return "200"

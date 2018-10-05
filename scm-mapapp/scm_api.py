@@ -34,12 +34,15 @@ def init_uplinkdf():
     return pd.DataFrame([],  columns =  ['site', 'v4ip', 'wan','region'])
 def init_eventdf():
     return pd.DataFrame([],  columns =  ['Time','utc', 'Message', 'Severity','region'])
+def init_sitelinksdf():
+    return pd.DataFrame([],  columns =  ['localcity','remotecity', 'local_node_serial', 'remote_node_serial','status', 'state','region'])
 
 sitedf       = init_sitedf()
 sites_snmpdf = init_sites_snmp()
 nodedf       = init_nodedf()
 uplinkdf     = init_uplinkdf()
 eventdf      = init_eventdf()
+sitelinksdf   = init_sitelinksdf()
 
 
 def get_sites(sitedf, realm, user, pw, region=0):
@@ -174,6 +177,53 @@ def get_sites_snmp_proxy(proxy,user="",pw=""):
         return pd.read_json(r.content, orient='index')
     else:
         return init_sites_snmpdf()
+
+#
+# Sitelinks to derive tunnel relationships
+#
+def get_sitelinks(sitelinksdf, sitedf, realm, user, pw, region=0):
+    ''' populate the provided pandas dataframe with the sitelink information, 
+        as this data is entered into the dataframe each row is annotated with the region that 
+        the node is assocated with, defaults to 0 region
+        '''
+    for s in sitedf.index:
+        if sitedf.loc[s]['region'] == region or region == 0:
+            sitename = sitedf.loc[s]['site']
+            r = scm.get_by_id('sitelinks', s, realm, user,pw)
+            if r.status_code == 200:
+                f = r.json()
+                for a in f['items']:
+              #  "remote_node_serial":"XN45B3EA7F5AF641"
+              #  "remote_site":"site-StLouis-a84ad2628cfb2b06"
+              #  "local_site":"site-HQ-9759dcfb53b4a9d1"
+              #  "local_node_serial":"XN8E48E858DD3F7C"
+              #  "id":"XN45B3EA7F5AF641_vti4_1_1"
+              # "status":"established"
+              #  "state":"up"
+                    localcity = sitedf.loc[a['local_site']]['site']
+                    remotecity = sitedf.loc[a['remote_site']]['site']
+
+                    sitelinksdf.loc[a['id']] = [localcity, 
+                                                remotecity,
+                                                a['local_node_serial'],
+                                                a['remote_node_serial'],
+                                                a['status'],
+                                                a['state'],
+                                                region] 
+    return
+
+def post_sitelinks(proxy, sitelinksdf):
+    ''' post the snmp site detail information onto the proxy cache'''
+    r = rq.post(proxy+'/api/sitelinks', json=sitelinksdf.to_json(orient='index'))
+    return
+
+def get_sitelinks_proxy(proxy,user="",pw=""):
+    ''' get the snmp site information from the proxy cache'''
+    r = rq.get( proxy + '/api/sitelinks', auth=(user,pw))
+    if r.status_code == 200:
+        return pd.read_json(r.content, orient='index')
+    else:
+        return init_sitelinksdf()
 
 def get_sites_state_proxy(proxy,user="",pw=""):
     ''' get the snmp site state information (if.location) from the proxy cache'''
