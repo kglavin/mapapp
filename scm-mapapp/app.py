@@ -22,6 +22,52 @@ app = dash.Dash(__name__)
 # needed to keep dash happy about complex dependancies with multi-page app.
 app.config.supress_callback_exceptions = True
 
+#
+# Home page
+#
+def home_regions():
+    r = html.Div( children = [
+            html.H3('Managing [3] Regions'),
+            html.P('Region 1'),
+            html.P('Region 2'),
+            html.P('Region 3')]
+        )
+    return r
+def home_nodes():
+    r = html.Div( children = [
+            html.H3('Managing [x] Nodes '),
+            html.P('In Region 1,   36 Nodes are Ok/Up,  4 Nodes are Alarming/Down')
+            html.P('In Region 2,   30 Nodes are Ok/Up,  3 Nodes are Alarming/Down'),
+            html.P('In Region 1,   40 Nodes are Ok/Up,  0 Nodes are Alarming/Down')]
+            )
+    return r
+def home_traffic():
+    r = html.Div( children = [
+            html.H3('Traffic Summary '),
+            html.Div(children = [ html.P('In Region 1, intra, inter and total traffic'),
+                html.Div(children = [dcc.Graph(id='region1-intra-traffic')], className='four columns'),
+                html.Div(children = [dcc.Graph(id='region1-inter-traffic')], className='four columns'),
+                html.Div(children = [dcc.Graph(id='region1-total-traffic')], className='four columns')]
+                )
+            html.Div(children = [ html.P('In Region 2, intra, inter and total traffic')
+                html.Div(children = [dcc.Graph(id='region2-intra-traffic')], className='four columns'),
+                html.Div(children = [dcc.Graph(id='region2-inter-traffic')], className='four columns'),
+                html.Div(children = [dcc.Graph(id='region2-total-traffic')], className='four columns')]
+                )
+            html.Div(children = [ html.P('In Region 3, intra, inter and total traffic')
+                html.Div(children = [dcc.Graph(id='region3-intra-traffic')], className='four columns'),
+                html.Div(children = [dcc.Graph(id='region3-inter-traffic')], className='four columns'),
+                html.Div(children = [dcc.Graph(id='region3-total-traffic')], className='four columns')]
+                )]
+        )
+    return r
+
+def home_html():
+ r  =   html.Div(children = [ html.Div( children=home_regions(),className='row'),
+                    html.Div( children=home_nodes(),className='row'),
+                    html.Div( children=home_traffic(),className='row')],
+                    className="twelve columns")
+ return r
 
 ###
 # Traffic Page -- this allows for interface and tunnel data to be presented in graphical format
@@ -322,7 +368,7 @@ def display_page(pathname):
     if pathname is None:
         r = html.Div('/')
     elif pathname == '/':
-        r = html.Div("/home_page")
+        r =home_html() 
     else:
         if pathname == '/map_page':
             r = map_html(regions)
