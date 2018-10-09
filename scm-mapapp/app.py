@@ -28,7 +28,7 @@ app.config.supress_callback_exceptions = True
 def home_regions():
     r = html.Div( children = [
             html.H3('Managing [3] Regions'),
-  #          html.P('Region 1'), html.Link('https://catfish3.riverbed.cc/kglavin-us'),
+            html.P('Region 1'), html.Link('https://catfish3.riverbed.cc/kglavin-us'),
   #          html.P('Region 2'), html.Link('https://catfish3.riverbed.cc/kglavin-us'),
   #          html.P('Region 3'), html.Link('https://catfish3.riverbed.cc/kglavin-us')]
         ]
