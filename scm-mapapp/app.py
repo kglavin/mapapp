@@ -29,20 +29,14 @@ def home_regions():
     r = html.Div( children = [
             html.H3('Managing [3] Regions'),
             html.P('Region 1'), 
-            html.A(html.Button('Launch Region1 SCM'),
-                                href='https://catfish3.riverbed.cc/admin/kglavin-us'
-                    ),
+            html.A(html.Button('Launch Region1 SCM'),href='https://catfish3.riverbed.cc/admin/kglavin-us'),
             html.Br(),
             html.P('Region 2'),
 
-            html.A(html.Button('Launch Region2 SCM', className='two columns'),
-                                href='https://catfish3.riverbed.cc/admin/kglavin-eur'
-                    ),
+            html.A(html.Button('Launch Region2 SCM'),href='https://catfish3.riverbed.cc/admin/kglavin-eur'),
             html.Br(),
             html.P('Region 3'), 
-            html.A(html.Button('Launch Region3 SCM', className='two columns'),
-                                href='https://catfish3.riverbed.cc/admin/kglavin-asia'
-                    ),
+            html.A(html.Button('Launch Region3 SCM'),href='https://catfish3.riverbed.cc/admin/kglavin-asia'),
             html.Br(),
         ]
         )
