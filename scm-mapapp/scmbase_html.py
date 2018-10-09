@@ -8,7 +8,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 
 def heading_html():
-    return html.Div([html.Div(
+    return html.Div([html.Div( children=
             [
                 html.H1(
                     'SteelConnect Global Networks Overview.',
@@ -35,8 +35,9 @@ def heading_html():
         className='twelve columns'
         )
 
+
 def footer_html():
-    return  html.Footer([html.Div([
+    return  html.Footer([html.Div(children=[
                     html.Div("this is the footer")],
                     className='ten columns',
                     style={
