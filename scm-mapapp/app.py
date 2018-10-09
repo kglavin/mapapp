@@ -64,11 +64,11 @@ def home_traffic():
     return r
 
 def home_html():
-    r  =   html.Div(children = [ html.Div( children=home_regions(),className='row'),
+    r  =   html.Div(children = [ html.Div('aaaa'),
+                    html.Div( children=home_regions(),className='row'),
                     html.Div( children=home_nodes(),className='row'),
                     html.Div( children=home_traffic(),className='row')],
                     className="twelve columns")
-    r = html.Div('aaaa',className="twelve columns" )
     return r
 
 ###
