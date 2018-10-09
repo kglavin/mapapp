@@ -47,7 +47,8 @@ def home_nodes():
             )
     return r
 def home_traffic():
-    r = html.Div( children = [
+    r = html.div("graphs here")
+    q = html.Div( children = [
             html.H3('Traffic Summary '),
             html.Div(children = [ html.P('In Region 1, intra, inter and total traffic'),
                 html.Div(children = [dcc.Graph(id='region1-intra-traffic')], className='four columns'),
@@ -73,10 +74,10 @@ def home_html():
                     html.Div( children=home_nodes(),className='row'),
                     html.Div( children=home_traffic(),className='row')],
                     className="twelve columns")
-    r = html.Div(children = [ html.Div( children=traffic_dropdowns(sitedf),className='row'),
-                                html.Div( children=home_regions(),className='row'),
-                                dcc.Graph(id='if-stats-graph')],
-                    className="twelve columns")
+    #r = html.Div(children = [ html.Div( children=traffic_dropdowns(sitedf),className='row'),
+    #                            html.Div( children=home_regions(),className='row'),
+    #                            dcc.Graph(id='if-stats-graph')],
+    #                className="twelve columns")
     return r
 
 ###

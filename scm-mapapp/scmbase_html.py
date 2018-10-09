@@ -42,14 +42,14 @@ def footer_html():
                     style={
                        'height': 70,
                        'color': 'blue',
-                       'backgroundColor': '#FF6900'
+#                       'backgroundColor': '#FF6900'
                     }),
                     html.P(id='live-update-text',
                         style={ 
                                 'height': 70,
                                 'text-align': 'right',
                                 'color': 'blue',
-                                'backgroundColor': '#FF6900'}),
+#                                'backgroundColor': '#FF6900'}),
                     dcc.Interval(
                         id='interval-component',
                         interval=5000, # in milliseconds
