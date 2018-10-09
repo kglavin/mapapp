@@ -29,16 +29,21 @@ def home_regions():
     r = html.Div( children = [
             html.H3('Managing [3] Regions'),
             html.P('Region 1'), 
-   #         html.Link('https://catfish3.riverbed.cc/kglavin-us'),
+            html.A(html.Button('Launch Region1 SCM', className='three columns'),
+                                href='https://catfish3.riverbed.cc/kglavin-us'
+                    ),
             html.P('Region 2'), 
-   #         html.Link('https://catfish3.riverbed.cc/kglavin-us'),
+            html.A(html.Button('Launch Region1 SCM', className='three columns'),
+                                href='https://catfish3.riverbed.cc/kglavin-us'
+                    ),
             html.P('Region 3'), 
-   #         html.Link('https://catfish3.riverbed.cc/kglavin-us')
+            html.A(html.Button('Launch Region1 SCM', className='three columns'),
+                                href='https://catfish3.riverbed.cc/kglavin-us'
+                    ),
         ]
         )
     return r
 def home_nodes():
-    print('Home_node()')
     r = html.Div( children = [
             html.H3('Managing [x] Nodes '),
             html.P('In Region 1,   36 Nodes are Ok/Up,  4 Nodes are Alarming/Down'),
