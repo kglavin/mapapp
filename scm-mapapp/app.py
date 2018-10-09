@@ -224,11 +224,12 @@ def gen_map(region):
             else:
                 print(li, "Dead -  not in index for gen_map")
 
-    tun_list = generate_tunnels(df,region)
+
+    draw_list = generate_tunnels(df,region)
     rl, gl = generate_sites(green_df, df, region)
-    tun_list.append(rl)
+    draw_list.append(rl)
     # drap green last so its the top layer of dots. 
-    tun_list.append(gl)
+    draw_list.append(gl)
     
     #TODO: can we focus the zoom of the map to just contain the points in the set?
     # for global networks, this calculation although mathamatically correct is not pleasing so limit center to no be about 50 degrees of latitde
@@ -258,10 +259,10 @@ def gen_map(region):
             'marker':{ 'size':15, 'symbol':'triangle', 'color': 'rgb(0, 0, 255)' },
             'text': "Center"
         }
-    tun_list.append(m_point)
+    draw_list.append(m_point)
 
     figure={       
-            'data': tun_list,
+            'data': draw_list,
             'layout': {   
                 'title': 'Status Map',
                 'showlegend': False,
