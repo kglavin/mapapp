@@ -51,21 +51,21 @@ def home_traffic():
     r = html.Div( children = [
             html.H3('Traffic Summary '),
             html.Div(children = [ html.P('In Region 1, intra, inter and total traffic'),
-                html.Div(children = [dcc.Graph(id='region1-intra-traffic')], className='four columns'),
-                html.Div(children = [dcc.Graph(id='region1-inter-traffic')], className='four columns'),
-                html.Div(children = [dcc.Graph(id='region1-total-traffic')], className='four columns')
+                html.Div(children = [dcc.Graph(id='region1-intra-traffic')], className='three columns'),
+                html.Div(children = [dcc.Graph(id='region1-inter-traffic')], className='three columns'),
+                html.Div(children = [dcc.Graph(id='region1-total-traffic')], className='three columns')
                 ], className="twelve columns"
                 ),
             html.Div(children = [ html.P('In Region 2, intra, inter and total traffic'),
-                html.Div(children = [dcc.Graph(id='region2-intra-traffic')], className='four columns'),
-                html.Div(children = [dcc.Graph(id='region2-inter-traffic')], className='four columns'),
-                html.Div(children = [dcc.Graph(id='region2-total-traffic')], className='four columns')
+                html.Div(children = [dcc.Graph(id='region2-intra-traffic')], className='three columns'),
+                html.Div(children = [dcc.Graph(id='region2-inter-traffic')], className='three columns'),
+                html.Div(children = [dcc.Graph(id='region2-total-traffic')], className='three columns')
                 ], className="twelve columns"
                 ),
             html.Div(children = [ html.P('In Region 3, intra, inter and total traffic'),
-                html.Div(children = [dcc.Graph(id='region3-intra-traffic')], className='four columns'),
-                html.Div(children = [dcc.Graph(id='region3-inter-traffic')], className='four columns'),
-                html.Div(children = [dcc.Graph(id='region3-total-traffic')], className='four columns')
+                html.Div(children = [dcc.Graph(id='region3-intra-traffic')], className='three columns'),
+                html.Div(children = [dcc.Graph(id='region3-inter-traffic')], className='three columns'),
+                html.Div(children = [dcc.Graph(id='region3-total-traffic')], className='three columns')
                 ], className="twelve columns"
                 )]
         )
