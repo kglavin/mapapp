@@ -64,12 +64,12 @@ def home_traffic():
     return r
 
 def home_html():
- r  =   html.Div(children = [ html.Div( children=home_regions(),className='row'),
+    r  =   html.Div(children = [ html.Div( children=home_regions(),className='row'),
                     html.Div( children=home_nodes(),className='row'),
                     html.Div( children=home_traffic(),className='row')],
                     className="twelve columns")
- r = html.Div('aaaa')
- return r
+    r = html.Div('aaaa',className="twelve columns" )
+    return r
 
 ###
 # Traffic Page -- this allows for interface and tunnel data to be presented in graphical format
