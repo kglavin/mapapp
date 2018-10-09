@@ -52,7 +52,7 @@ def home_traffic():
                 html.Div(children = [dcc.Graph(id='region1-intra-traffic')], className='three columns'),
                 html.Div(children = [dcc.Graph(id='region1-inter-traffic')], className='three columns'),
                 html.Div(children = [dcc.Graph(id='region1-total-traffic')], className='three columns')
-                ], className="twelve columns"
+                ], className="row"
                 ),
             html.Div(children = [ html.P('In Region 2, intra, inter and total traffic'),
                 html.Div(children = [dcc.Graph(id='region2-intra-traffic')], className='three columns'),
