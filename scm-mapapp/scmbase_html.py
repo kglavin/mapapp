@@ -49,7 +49,8 @@ def footer_html():
                                 'height': 70,
                                 'text-align': 'right',
                                 'color': 'blue',
-#                                'backgroundColor': '#FF6900'}),
+#                                'backgroundColor': '#FF6900'
+                    }),
                     dcc.Interval(
                         id='interval-component',
                         interval=5000, # in milliseconds
