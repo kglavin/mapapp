@@ -47,7 +47,7 @@ def home_nodes():
             )
     return r
 def home_traffic():
-    r = html.div("graphs here")
+    r = html.Div("graphs here")
     q = html.Div( children = [
             html.H3('Traffic Summary '),
             html.Div(children = [ html.P('In Region 1, intra, inter and total traffic'),
