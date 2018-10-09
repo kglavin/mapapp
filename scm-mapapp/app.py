@@ -64,7 +64,7 @@ def home_traffic():
     return r
 
 def home_html():
-    r  =   html.Div(
+    r  =   html.Div( children = [ 
                     html.Div( children=home_regions(),className='row'),
                     html.Div( children=home_nodes(),className='row'),
                     html.Div( children=home_traffic(),className='row')],
