@@ -69,9 +69,9 @@ def home_html():
                     html.Div( children=home_nodes(),className='row'),
                     html.Div( children=home_traffic(),className='row')],
                     className="twelve columns")
-    r = [ html.Div( children=home_regions(),className='row'),
-                    html.Div( children=home_nodes(),className='row'),
-                    html.Div( children=home_traffic(),className='row')]
+    r = html.Div(children = [ html.Div( children=traffic_dropdowns(sitedf),className='row'),
+                                dcc.Graph(id='if-stats-graph')],
+                    className="twelve columns")
     return r
 
 ###
