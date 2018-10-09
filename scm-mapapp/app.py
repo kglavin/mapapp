@@ -36,7 +36,7 @@ def home_regions():
 def home_nodes():
     r = html.Div( children = [
             html.H3('Managing [x] Nodes '),
-            html.P('In Region 1,   36 Nodes are Ok/Up,  4 Nodes are Alarming/Down')
+            html.P('In Region 1,   36 Nodes are Ok/Up,  4 Nodes are Alarming/Down'),
             html.P('In Region 2,   30 Nodes are Ok/Up,  3 Nodes are Alarming/Down'),
             html.P('In Region 1,   40 Nodes are Ok/Up,  0 Nodes are Alarming/Down')]
             )
