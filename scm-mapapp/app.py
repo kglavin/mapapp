@@ -34,6 +34,7 @@ def home_regions():
         )
     return r
 def home_nodes():
+    print('Home_node()')
     r = html.Div( children = [
             html.H3('Managing [x] Nodes '),
             html.P('In Region 1,   36 Nodes are Ok/Up,  4 Nodes are Alarming/Down'),
@@ -366,7 +367,7 @@ def gen_if_stats_graphs(site,tun,eth,duration,packets):
               [dash.dependencies.Input('url', 'pathname')])
 def display_page(pathname):
     if pathname is None:
-        r = html.Div('/')
+        r =home_html() 
     elif pathname == '/':
         r =home_html() 
     else:
