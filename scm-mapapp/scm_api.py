@@ -275,7 +275,7 @@ def find_tunnel_relationships(sitedf,region=0):
     if (mid_lat > 50):
         mid_lat = 50
     if (mid_lat < -50):
-        mid_lad = -50
+        mid_lat = -50
 
     # for all the site entries find elements that have reference entried in their leaf attribute
     # add them the ll list
