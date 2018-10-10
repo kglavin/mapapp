@@ -259,8 +259,9 @@ def gen_map(region):
             'lon': [mid_lon],
             'type': 'scattermapbox',
             'mode':'markers',
-            'marker':{ 'size':15, 'symbol':'triangle', 'color': 'rgb(0, 0, 255)' },
-            'text': "Center"
+            'marker':{ 'size':15, 'symbol':'castle', 'color': 'rgb(0, 0, 255)' },
+            'text': "Overlay Mesh"
+
         }
     draw_list.append(m_point)
 
