@@ -85,6 +85,9 @@ def traffic_dropdowns(sitedf):
         sites = sitedf['site'].tolist()
     else:
         sites = ['nosite']
+
+    
+
     interfaces = [ 0,1,2,3,4]
     tun=['eth','tun']
     duration = [ '1h', '3h','30m', '5m', '24h', '7d']

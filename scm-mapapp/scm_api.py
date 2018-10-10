@@ -35,7 +35,7 @@ def init_uplinkdf():
 def init_eventdf():
     return pd.DataFrame([],  columns =  ['Time','utc', 'Message', 'Severity','region'])
 def init_sitelinksdf():
-    return pd.DataFrame([],  columns =  ['localcity','remotecity', 'local_node_serial', 'remote_node_serial','status', 'state','region'])
+    return pd.DataFrame([],  columns =  ['localcity','remotecity', 'local_site','local_node_serial', 'remote_node_serial','status', 'state','region'])
 
 sitedf       = init_sitedf()
 sites_snmpdf = init_sites_snmp()
@@ -205,6 +205,7 @@ def get_sitelinks(sitelinksdf, sitedf, realm, user, pw, region=0):
 
                     sitelinksdf.loc[a['id']] = [localcity, 
                                                 remotecity,
+                                                a['local_site'],
                                                 a['local_node_serial'],
                                                 a['remote_node_serial'],
                                                 a['status'],
@@ -213,17 +214,38 @@ def get_sitelinks(sitelinksdf, sitedf, realm, user, pw, region=0):
     return
 
 def post_sitelinks(proxy, sitelinksdf):
-    ''' post the snmp site detail information onto the proxy cache'''
+    ''' post the snmp sitelink detail information onto the proxy cache, this sitelink data provides a 
+        list of the VTI interfaces and their connectivity to other sites 
+    '''
     r = rq.post(proxy+'/api/sitelinks', json=sitelinksdf.to_json(orient='index'))
     return
 
 def get_sitelinks_proxy(proxy,user="",pw=""):
-    ''' get the snmp site information from the proxy cache'''
+    ''' get the snmp sitelink information from the proxy cache'''
     r = rq.get( proxy + '/api/sitelinks', auth=(user,pw))
     if r.status_code == 200:
         return pd.read_json(r.content, orient='index')
     else:
         return init_sitelinksdf()
+
+
+#
+# sitelinks processing 
+#        
+def build_vti_info(sitedf, region=0):
+    vti_dict = {}
+    sitelinksdf = get_sitelinks_proxy()
+    for s in sitedf.index:
+        if sitedf.loc[s]['region'] == region or region == 0:
+            sitename = sitedf.loc[s]['site']
+            vti_list = []
+            for sl in sitelinksdf.index:
+                if sitelinksdf.loc[sl]['localcity'] == sitename:
+                    vti_list.append(sitelinksdf.loc[sl]['id'])
+            vti_dict[sitename] = vti_list    
+    print(vti_dict)
+    return(vti_dict)
+
 
 def get_sites_state_proxy(proxy,user="",pw=""):
     ''' get the snmp site state information (if.location) from the proxy cache'''
