@@ -29,9 +29,15 @@ def get(item, realm, user,pw):
         'zones':'/api/scm.config/1.0/zones',
         'devices':'/api/scm.config/1.0/devices',
         'path_rules':'/api/scm.config/1.0/path_rules',
-        'status':'/api/scm.config/1.0.status',
+        'status':'/api/scm.config/1.0/status',
         'eventlogs':'/api/scm.reporting/1.0/event_logs',
         'uplinks_r':'/api/scm.reporting/1.0/uplinks',
+        'inbound_rules':'/api/scm.config/1.0/inbound_rules',
+        'outbound_rules':'/api/scm.config/1.0/outbound_rules',
+        'custom_apps':'/api/scm.config/1.0/custom_apps',
+        'apps':'/api/scm.config/1.0/apps',
+        'app_groups':'/api/scm.config/1.0/app_groups'
+
     }
     which_item = choices.get(item, 'status')
     r = rq.get(realm + which_item, auth=(user,pw))    
@@ -49,8 +55,12 @@ def get_by_id(item, id, realm, user, pw):
         'zone':'/api/scm.config/1.0/zone/{id}',
         'device':'/api/scm.config/1.0/device/{id}',
         'path_rule':'/api/scm.config/1.0/path_rule/{id}',
+        'inbound_rule':'/api/scm.config/1.0/inbound_rule/{id}',
+        'outbound_rule':'/api/scm.config/1.0/outbound_rule/{id}',
         'status':'/api/scm.config/1.0/status',
         'sitelinks':'/api/scm.reporting/1.0/site/{id}/sitelinks',
+        'custom_app':'/api/scm.config/1.0/custom_app/{id}',
+        'app_group':'/api/scm.config/1.0/app_group/{id}',
     }
 
     which_item = choices.get(item, 'status')
